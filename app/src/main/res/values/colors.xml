@@ -5,4 +5,8 @@
     <color name="colorAccent">#FF4081</color>
     <color name="persianBlue">#3023AE</color>
     <color name="orchid">#C86DD7</color>
+    <color name="white">#FFFFFF</color>
+    <color name="ghost_white">#F9FAFC</color>
+    <color name="charcoal">#403A444A</color>
+
 </resources>

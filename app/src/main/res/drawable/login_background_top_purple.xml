@@ -3,38 +3,18 @@
     android:shape="rectangle">
 
 
-    <padding
-        android:bottom="20dp"
-        android:left="20dp"/>
+
     <corners
-        android:bottomRightRadius="350dp"
+        android:bottomRightRadius="200dp"
         />
 
     <gradient
-        android:centerX="float"
-        android:centerY="float"
         android:endColor="@color/orchid"
-        android:gradientRadius="integer"
         android:startColor="@color/persianBlue"
         android:type="linear" />
 
-    <!--If your shape requires only one solid color-->
-    <!--<solid
-        android:color="#FFFFFF" />-->
-
     <size
         android:width="360dp"
-        android:height="560dp" />
-
-    <!--Use android:dashWidth="2dp" and android:dashGap="2dp"
-    to add dashes to your stroke-->
-
-
-    <!--If you want to add padding-->
-    <!-- <padding
-         android:left="10dp"
-         android:top="20dp"
-         android:right="40dp"
-         android:bottom="8dp" />-->
+        android:height="360dp" />
 
 </shape>

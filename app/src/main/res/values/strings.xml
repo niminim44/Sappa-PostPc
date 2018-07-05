@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Sappa</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="sappa_slogan">GET RID OF STUFF LAYING AROUND THE HOUSE</string>
+    <string name="app_explanation">FIND STUFF YOU REALLY NEED</string>
+    <string name="login_with">LOGIN WITH:</string>
 </resources>
