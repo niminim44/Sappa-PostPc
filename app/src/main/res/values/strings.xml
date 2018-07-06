@@ -4,4 +4,7 @@
     <string name="sappa_slogan">GET RID OF STUFF LAYING AROUND THE HOUSE</string>
     <string name="app_explanation">FIND STUFF YOU REALLY NEED</string>
     <string name="login_with">LOGIN WITH:</string>
+    <string name="facebook_app_id">242225589710264</string>
+    <string name="fb_login_protocol_scheme">fb242225589710264</string>
+    <string name="login_cancel_message">Login was cancelled</string>
 </resources>
