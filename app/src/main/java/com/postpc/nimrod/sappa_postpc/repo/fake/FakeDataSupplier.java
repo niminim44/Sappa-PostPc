@@ -1,5 +1,6 @@
 package com.postpc.nimrod.sappa_postpc.repo.fake;
 
+import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
 import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
 import com.postpc.nimrod.sappa_postpc.repo.Repo;
 
@@ -8,19 +9,40 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class FakeDataSupplier implements Repo{
 
     private static final String FAKE_DESCRIPTION = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 
+    private boolean calledOnce = false;
+    private static long delayTime = 2000;  //milliseconds
+
     @Override
     public Single<List<NearbyPostModel>> getNearbyPostsRx() {
+        delayTime = calledOnce ? 0 : delayTime;
         return Single.just(true)
-                .delay(5000, TimeUnit.MILLISECONDS)
+                .delay(delayTime, TimeUnit.MILLISECONDS)
                 .map(this::getNearbyPosts)
                 .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Single<List<MyPostModel>> getMyPostsRx() {
+        delayTime = calledOnce ? 0 : delayTime;
+        return Single.just(true)
+                .delay(delayTime, TimeUnit.MILLISECONDS)
+                .map(this::getMyPosts)
+                .subscribeOn(Schedulers.io());
+    }
+
+    private List<MyPostModel> getMyPosts(Boolean ignored) {
+        List<MyPostModel> myPosts = new ArrayList<>();
+        myPosts.add(new MyPostModel("https://picsum.photos/300/200/?image=95", "DINING TABLE", FAKE_DESCRIPTION));
+        myPosts.add(new MyPostModel("https://picsum.photos/300/200/?image=656", "MOUSE< WORKING", FAKE_DESCRIPTION));
+        myPosts.add(new MyPostModel("https://picsum.photos/300/200/?image=660", "TWO CHAIRS", FAKE_DESCRIPTION));
+        myPosts.add(new MyPostModel("https://picsum.photos/600/400/?image=1013", "COFFEE MUG", FAKE_DESCRIPTION));
+        return myPosts;
     }
 
     private List<NearbyPostModel> getNearbyPosts(Boolean ignored) {
