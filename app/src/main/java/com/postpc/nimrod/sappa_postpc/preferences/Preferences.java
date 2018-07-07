@@ -7,9 +7,9 @@ public class Preferences {
     public static final String PREFS_NAME = "sappa-preferences";
 
     private static final String USER_ID = "user-id";
-    private static final String FIRST_NAME = "first-name";
-    private static final String LAST_NAME = "last-name";
+    private static final String NAME = "name";
     private static final String EMAIL = "email";
+    private static final String DEFAULT_USER_NAME = "default";
     private final SharedPreferences sharedPreferences;
 
     public Preferences(SharedPreferences sharedPreferences){
@@ -17,11 +17,20 @@ public class Preferences {
     }
 
 
-    public void saveUserInfo(String userId, String firstName, String lastName, String email) {
+    public void saveUserInfo(String userId, String name, String email) {
         saveUserId(userId);
-        saveFirstName(firstName);
-        saveLastName(lastName);
+        saveName(name);
         saveEmail(email);
+    }
+
+    public String getUserName(){
+        return sharedPreferences.getString(NAME, DEFAULT_USER_NAME);
+    }
+
+    private void saveName(String name) {
+        sharedPreferences.edit()
+                .putString(NAME, name)
+                .apply();
     }
 
     private void saveUserId(String userId) {
@@ -29,21 +38,6 @@ public class Preferences {
                 .putString(USER_ID, userId)
                 .apply();
     }
-
-
-    private void saveFirstName(String firstName) {
-        sharedPreferences.edit()
-                .putString(FIRST_NAME, firstName)
-                .apply();
-    }
-
-
-    private void saveLastName(String lastName) {
-        sharedPreferences.edit()
-                .putString(LAST_NAME, lastName)
-                .apply();
-    }
-
 
     private void saveEmail(String email) {
         sharedPreferences.edit()

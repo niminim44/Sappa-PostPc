@@ -1,6 +1,7 @@
 package com.postpc.nimrod.sappa_postpc.login;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.BindViews;
@@ -42,8 +44,15 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        forceLtr();
         presenter = new LoginPresenter(this, CallbackManager.Factory.create(), new Preferences(getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)));
         presenter.init();
+    }
+
+    private void forceLtr() {
+        Configuration configuration = getResources().getConfiguration();
+        configuration.setLayoutDirection(new Locale("en"));
+        getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
     }
 
     @Override

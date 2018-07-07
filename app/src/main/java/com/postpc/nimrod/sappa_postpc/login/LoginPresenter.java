@@ -19,6 +19,11 @@ import org.json.JSONObject;
 class LoginPresenter implements LoginContract.Presenter {
 
     private static final String EMAIL = "email";
+    private static final String ID = "id";
+
+    private static final String NAME = "name";
+
+
     private static final String FACEBOOK_PROFILE_FIELDS = "id,name,email";
     private static final String FIELDS = "fields";
 
@@ -101,11 +106,9 @@ class LoginPresenter implements LoginContract.Presenter {
     }
 
     private void saveUserProperties(JSONObject properties) throws JSONException {
-        Profile profile = Profile.getCurrentProfile();
         preferences.saveUserInfo(
-                profile.getId(),
-                profile.getFirstName(),
-                profile.getLastName(),
+                properties.getString(ID),
+                properties.getString(NAME),
                 properties.getString(EMAIL));
     }
 
