@@ -1,16 +1,9 @@
 package com.postpc.nimrod.sappa_postpc.main.myposts;
 
-import android.support.v7.widget.RecyclerView;
-import android.widget.ProgressBar;
-
-import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
 import com.postpc.nimrod.sappa_postpc.repo.Repo;
 
 import java.util.List;
-
-import butterknife.BindInt;
-import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 class MyPostsPresenter implements MyPostsContract.Presenter{

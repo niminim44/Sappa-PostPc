@@ -40,7 +40,6 @@ public class MyPostsFragment extends Fragment implements MyPostsContract.View{
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
