@@ -6,7 +6,6 @@ import com.postpc.nimrod.sappa_postpc.repo.Repo;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 
 class NearbyPresenter implements NearbyContract.Presenter{
 
@@ -21,6 +20,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
 
     @Override
     public void init() {
+        view.showProgressBar();
         repo.getNearbyPostsRx()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess(this::loadPostsToRecyclerView)
@@ -28,10 +28,8 @@ class NearbyPresenter implements NearbyContract.Presenter{
     }
 
     private void loadPostsToRecyclerView(List<NearbyPostModel> nearbyPostModels) {
+        view.hideProgressBar();
         view.initRecyclerView(nearbyPostModels);
     }
 
-    private List<NearbyItemViewHolder> getNearbyPosts() {
-        return null;
-    }
 }

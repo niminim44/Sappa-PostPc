@@ -5,8 +5,10 @@ import com.postpc.nimrod.sappa_postpc.repo.Repo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class FakeDataSupplier implements Repo{
@@ -15,10 +17,13 @@ public class FakeDataSupplier implements Repo{
 
     @Override
     public Single<List<NearbyPostModel>> getNearbyPostsRx() {
-        return Single.fromCallable(this::getNearbyPosts).subscribeOn(Schedulers.io());
+        return Single.just(true)
+                .delay(5000, TimeUnit.MILLISECONDS)
+                .map(this::getNearbyPosts)
+                .subscribeOn(Schedulers.io());
     }
 
-    private List<NearbyPostModel> getNearbyPosts() {
+    private List<NearbyPostModel> getNearbyPosts(Boolean ignored) {
         List<NearbyPostModel> nearbyPosts = new ArrayList<>();
         nearbyPosts.add(new NearbyPostModel("https://picsum.photos/300/200/?image=573", "ALMOST NEW BIKE", FAKE_DESCRIPTION, "", "3.5 miles away"));
         nearbyPosts.add(new NearbyPostModel("https://picsum.photos/300/200/?image=660", "TWO CHAIRS", FAKE_DESCRIPTION, "", "5 miles away"));

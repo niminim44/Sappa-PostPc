@@ -9,6 +9,10 @@ public interface NearbyContract {
     interface View{
 
         void initRecyclerView(List<NearbyPostModel> nearbyPostModels);
+
+        void showProgressBar();
+
+        void hideProgressBar();
     }
 
     interface Presenter{
