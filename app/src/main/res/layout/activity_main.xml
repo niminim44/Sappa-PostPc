@@ -35,7 +35,7 @@
     <ImageView
         android:layout_width="47dp"
         android:layout_height="31dp"
-        android:src="@drawable/logo_small"
+        android:src="@drawable/app_gradient"
         tools:tint="@color/orchid"
         android:tint="@color/white"
         android:layout_marginEnd="25dp"
