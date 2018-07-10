@@ -16,7 +16,7 @@ public class FakeDataSupplier implements Repo{
     private static final String FAKE_DESCRIPTION = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 
     private boolean calledOnce = false;
-    private static long delayTime = 2000;  //milliseconds
+    private static long delayTime = 500;  //milliseconds
 
     @Override
     public Single<List<NearbyPostModel>> getNearbyPostsRx() {

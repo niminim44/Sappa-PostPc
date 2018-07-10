@@ -28,45 +28,17 @@ class SettingsPresenter implements SettingsContract.Presenter{
     private List<SettingModel> getSettingItems() {
         final List<SettingModel> data = new ArrayList<>();
         data.add(new SettingModel(
-                "0 ACCELERATE_DECELERATE_INTERPOLATOR",
-                R.color.persianBlue,
-                R.color.orchid,
-                Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));
-        data.add(new SettingModel(
-                "1 ACCELERATE_INTERPOLATOR",
-                R.color.persianBlue,
-                R.color.orchid,
-                Utils.createInterpolator(Utils.ACCELERATE_INTERPOLATOR)));
-        data.add(new SettingModel(
-                "2 BOUNCE_INTERPOLATOR",
-                R.color.persianBlue,
-                R.color.orchid,
-                Utils.createInterpolator(Utils.BOUNCE_INTERPOLATOR)));
-        data.add(new SettingModel(
-                "3 DECELERATE_INTERPOLATOR",
-                R.color.persianBlue,
-                R.color.orchid,
-                Utils.createInterpolator(Utils.DECELERATE_INTERPOLATOR)));
-        data.add(new SettingModel(
-                "4 FAST_OUT_LINEAR_IN_INTERPOLATOR",
-                R.color.persianBlue,
-                R.color.orchid,
-                Utils.createInterpolator(Utils.FAST_OUT_LINEAR_IN_INTERPOLATOR)));
-        data.add(new SettingModel(
-                "5 FAST_OUT_SLOW_IN_INTERPOLATOR",
-                R.color.persianBlue,
-                R.color.orchid,
+                R.string.user_info,
+                R.color.dodger_blue,
                 Utils.createInterpolator(Utils.FAST_OUT_SLOW_IN_INTERPOLATOR)));
         data.add(new SettingModel(
-                "6 LINEAR_INTERPOLATOR",
-                R.color.persianBlue,
-                R.color.orchid,
-                Utils.createInterpolator(Utils.LINEAR_INTERPOLATOR)));
+                R.string.notification_settings,
+                R.color.burnt_sienna,
+                Utils.createInterpolator(Utils.FAST_OUT_SLOW_IN_INTERPOLATOR)));
         data.add(new SettingModel(
-                "7 LINEAR_OUT_SLOW_IN_INTERPOLATOR",
-                R.color.persianBlue,
-                R.color.orchid,
-                Utils.createInterpolator(Utils.LINEAR_OUT_SLOW_IN_INTERPOLATOR)));
-        return data;
+                R.string.about,
+                R.color.jungle_green,
+                Utils.createInterpolator(Utils.FAST_OUT_SLOW_IN_INTERPOLATOR)));
+       return data;
     }
 }

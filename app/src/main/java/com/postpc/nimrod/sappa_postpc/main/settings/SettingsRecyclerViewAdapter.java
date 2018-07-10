@@ -3,6 +3,7 @@ package com.postpc.nimrod.sappa_postpc.main.settings;
 import android.animation.ObjectAnimator;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -63,6 +64,9 @@ public class SettingsRecyclerViewAdapter extends RecyclerView.Adapter<SettingsRe
         @BindView(R.id.setting_title_text_view)
         TextView textView;
 
+        @BindView(R.id.setting_color_view)
+        View colorView;
+
         @BindView(R.id.button)
         ConstraintLayout buttonLayout;
 
@@ -70,7 +74,7 @@ public class SettingsRecyclerViewAdapter extends RecyclerView.Adapter<SettingsRe
         ExpandableLinearLayout expandableLayout;
 
         @BindView(R.id.item_layout)
-        RelativeLayout itemLayout;
+        CardView itemLayout;
 
         ViewHolder(View v) {
             super(v);
@@ -95,9 +99,10 @@ public class SettingsRecyclerViewAdapter extends RecyclerView.Adapter<SettingsRe
                     SettingsRecyclerViewAdapter.this.expandState.put(position, false);
                 }
             });
-
             buttonLayout.setRotation(SettingsRecyclerViewAdapter.this.expandState.get(position) ? 180f : 0f);
             itemLayout.setOnClickListener(v -> onClickButton(expandableLayout));
+            textView.setText(itemView.getContext().getResources().getString(item.getTitleResourceId()));
+            colorView.setBackgroundColor(itemView.getContext().getResources().getColor(item.getColorResourceId()));
         }
     }
 
