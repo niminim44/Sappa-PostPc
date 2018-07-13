@@ -12,6 +12,8 @@ public interface MainContract {
     interface View{
 
 
+        void showFab();
+
         void setUserNameTextView(String userName);
 
         void setViewPagerAndTabsLayout(List<Fragment> viewPagerFragments, List<Integer> tabsLayoutsIds, TabLayout.OnTabSelectedListener tabSelectedListener, int currentItemPosition);
@@ -21,6 +23,14 @@ public interface MainContract {
         void setLayoutBackground(ConstraintLayout layout, int drawableResourceId);
 
         void openNewPostFragment();
+
+        void hideFab();
+
+        void setFabIcon(int iconResourceId);
+
+        void slideDownFab(float fabMarginsInPx);
+
+        void slideUpFab(float fabMarginsInPx);
     }
 
     interface Presenter{

@@ -9,6 +9,7 @@ import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.myposts.MyPostsFragment;
 import com.postpc.nimrod.sappa_postpc.main.nearby.NearbyFragment;
 import com.postpc.nimrod.sappa_postpc.main.settings.SettingsFragment;
+import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
 import java.util.ArrayList;
@@ -18,23 +19,36 @@ import java.util.Objects;
 class MainPresenter implements MainContract.Presenter{
 
     private static final int INITIAL_TAB_LAYOUT_POSITION = 0;
+    private static final int NEARBY_POSITION = 0;
+    private static final int MYPOSTS_POSITION = 1;
+    private static final int SETTINGS_POSITION = 2;
+    private static final float FAB_MARGIN_IN_DP = 10;
     private final Preferences preferences;
+    private UiUtils uiUtils;
     private MainContract.View view;
+    private float fabMarginsInPx;
 
-    MainPresenter(MainContract.View view, Preferences preferences) {
+    MainPresenter(MainContract.View view, Preferences preferences, UiUtils uiUtils) {
         this.view = view;
         this.preferences = preferences;
+        this.uiUtils = uiUtils;
     }
 
     @Override
     public void init() {
+        calcFabMarginsInPixels();
         view.setUserNameTextView(preferences.getUserName());
         view.setViewPagerAndTabsLayout(getViewPagerFragments(), getTabsLayoutsIds(),
                 getTabSelectedListener(), INITIAL_TAB_LAYOUT_POSITION);
     }
 
+    private void calcFabMarginsInPixels() {
+        fabMarginsInPx = uiUtils.convertDpToPixel(FAB_MARGIN_IN_DP);
+    }
+
     @Override
     public void onFabClicked() {
+        view.hideFab();
         view.openNewPostFragment();
     }
 
@@ -42,6 +56,7 @@ class MainPresenter implements MainContract.Presenter{
         return new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                handleFab(tab.getPosition());
                 TextView tabName = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.text_view);
                 ConstraintLayout layout = Objects.requireNonNull(tab.getCustomView()).findViewById(R.id.layout);
                 view.setTextViewColor(tabName, R.color.royal_purple);
@@ -61,6 +76,21 @@ class MainPresenter implements MainContract.Presenter{
 
             }
         };
+    }
+
+    private void handleFab(int position) {
+        switch (position){
+            case NEARBY_POSITION:
+                view.slideUpFab(fabMarginsInPx);
+                view.setFabIcon(R.drawable.ic_search_white_26dp);
+                break;
+            case MYPOSTS_POSITION:
+                view.slideUpFab(fabMarginsInPx);
+                view.setFabIcon(R.drawable.ic_plus_white_24dp);
+                break;
+            case SETTINGS_POSITION:
+                view.slideDownFab(fabMarginsInPx);
+        }
     }
 
     private List<Integer> getTabsLayoutsIds(){
