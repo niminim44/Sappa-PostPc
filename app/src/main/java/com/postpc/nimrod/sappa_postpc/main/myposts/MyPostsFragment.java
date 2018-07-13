@@ -1,6 +1,7 @@
 package com.postpc.nimrod.sappa_postpc.main.myposts;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.widget.ProgressBar;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.nearby.NearbyRecyclerViewAdapter;
 import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
+import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 import com.postpc.nimrod.sappa_postpc.repo.fake.FakeDataSupplier;
 
 import java.util.List;
@@ -45,7 +47,7 @@ public class MyPostsFragment extends Fragment implements MyPostsContract.View{
                              Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.fragment_my_posts, container, false);
         ButterKnife.bind(this, v);
-        presenter = new MyPostsPresenter(this, new FakeDataSupplier());
+        presenter = new MyPostsPresenter(this, new FakeDataSupplier(), getContext().getSharedPreferences(Preferences.PREFS_NAME, Context.MODE_PRIVATE));
         presenter.init();
         return v;
     }

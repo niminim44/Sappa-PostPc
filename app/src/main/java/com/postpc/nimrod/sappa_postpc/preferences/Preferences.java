@@ -10,6 +10,7 @@ public class Preferences {
     private static final String NAME = "name";
     private static final String EMAIL = "email";
     private static final String DEFAULT_USER_NAME = "default";
+    private static final String DEFAULT_USER_ID = "12345678";
     private final SharedPreferences sharedPreferences;
 
     public Preferences(SharedPreferences sharedPreferences){
@@ -25,6 +26,10 @@ public class Preferences {
 
     public String getUserName(){
         return sharedPreferences.getString(NAME, DEFAULT_USER_NAME);
+    }
+
+    public String getUserId(){
+        return sharedPreferences.getString(USER_ID, DEFAULT_USER_ID);
     }
 
     private void saveName(String name) {

@@ -6,12 +6,13 @@ import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
 import java.util.List;
 
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public interface Repo {
 
-    Single<List<NearbyPostModel>> getNearbyPostsRx();
+    io.reactivex.Observable<List<NearbyPostModel>> getNearbyPostsRx();
 
-    Single<List<MyPostModel>> getMyPostsRx();
+    Observable<List<MyPostModel>> getMyPostsRx();
 
 }

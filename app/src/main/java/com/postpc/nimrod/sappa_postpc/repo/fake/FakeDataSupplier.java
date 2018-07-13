@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
@@ -15,28 +17,20 @@ public class FakeDataSupplier implements Repo{
 
     private static final String FAKE_DESCRIPTION = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 
-    private boolean calledOnce = false;
-    private static long delayTime = 500;  //milliseconds
 
     @Override
-    public Single<List<NearbyPostModel>> getNearbyPostsRx() {
-        delayTime = calledOnce ? 0 : delayTime;
-        return Single.just(true)
-                .delay(delayTime, TimeUnit.MILLISECONDS)
-                .map(this::getNearbyPosts)
+    public Observable<List<NearbyPostModel>> getNearbyPostsRx() {
+        return Observable.fromCallable(this::getNearbyPosts)
                 .subscribeOn(Schedulers.io());
     }
 
     @Override
-    public Single<List<MyPostModel>> getMyPostsRx() {
-        delayTime = calledOnce ? 0 : delayTime;
-        return Single.just(true)
-                .delay(delayTime, TimeUnit.MILLISECONDS)
-                .map(this::getMyPosts)
+    public Observable<List<MyPostModel>> getMyPostsRx() {
+        return Observable.fromCallable(this::getMyPosts)
                 .subscribeOn(Schedulers.io());
     }
 
-    private List<MyPostModel> getMyPosts(Boolean ignored) {
+    private List<MyPostModel> getMyPosts() {
         List<MyPostModel> myPosts = new ArrayList<>();
         myPosts.add(new MyPostModel("https://picsum.photos/300/200/?image=95", "DINING TABLE", FAKE_DESCRIPTION));
         myPosts.add(new MyPostModel("https://picsum.photos/300/200/?image=656", "MOUSE< WORKING", FAKE_DESCRIPTION));
@@ -45,7 +39,7 @@ public class FakeDataSupplier implements Repo{
         return myPosts;
     }
 
-    private List<NearbyPostModel> getNearbyPosts(Boolean ignored) {
+    private List<NearbyPostModel> getNearbyPosts() {
         List<NearbyPostModel> nearbyPosts = new ArrayList<>();
         nearbyPosts.add(new NearbyPostModel("https://picsum.photos/300/200/?image=573", "ALMOST NEW BIKE", FAKE_DESCRIPTION, "", "3.5 miles away"));
         nearbyPosts.add(new NearbyPostModel("https://picsum.photos/300/200/?image=660", "TWO CHAIRS", FAKE_DESCRIPTION, "", "5 miles away"));

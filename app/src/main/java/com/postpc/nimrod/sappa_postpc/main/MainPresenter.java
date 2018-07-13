@@ -33,6 +33,11 @@ class MainPresenter implements MainContract.Presenter{
                 getTabSelectedListener(), INITIAL_TAB_LAYOUT_POSITION);
     }
 
+    @Override
+    public void onFabClicked() {
+        view.openNewPostFragment();
+    }
+
     private TabLayout.OnTabSelectedListener getTabSelectedListener() {
         return new TabLayout.OnTabSelectedListener() {
             @Override

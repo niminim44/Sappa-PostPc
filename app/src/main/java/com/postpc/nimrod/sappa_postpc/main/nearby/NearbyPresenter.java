@@ -23,7 +23,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
         view.showProgressBar();
         repo.getNearbyPostsRx()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess(this::loadPostsToRecyclerView)
+                .doOnNext(this::loadPostsToRecyclerView)
                 .subscribe();
     }
 

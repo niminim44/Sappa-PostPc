@@ -19,10 +19,14 @@ public interface MainContract {
         void setTextViewColor(TextView textView, int colorResourceId);
 
         void setLayoutBackground(ConstraintLayout layout, int drawableResourceId);
+
+        void openNewPostFragment();
     }
 
     interface Presenter{
 
         void init();
+
+        void onFabClicked();
     }
 }
