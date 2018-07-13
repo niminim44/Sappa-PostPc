@@ -6,11 +6,15 @@ import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.main.events.NearbyPostClickedEvent;
 import com.postpc.nimrod.sappa_postpc.main.myposts.MyPostsFragment;
 import com.postpc.nimrod.sappa_postpc.main.nearby.NearbyFragment;
 import com.postpc.nimrod.sappa_postpc.main.settings.SettingsFragment;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,21 +29,36 @@ class MainPresenter implements MainContract.Presenter{
     private static final float FAB_MARGIN_IN_DP = 10;
     private final Preferences preferences;
     private UiUtils uiUtils;
+    private EventBus eventBus;
     private MainContract.View view;
     private float fabMarginsInPx;
 
-    MainPresenter(MainContract.View view, Preferences preferences, UiUtils uiUtils) {
+    MainPresenter(MainContract.View view, Preferences preferences, UiUtils uiUtils, EventBus eventBus) {
         this.view = view;
         this.preferences = preferences;
         this.uiUtils = uiUtils;
+        this.eventBus = eventBus;
     }
 
     @Override
     public void init() {
+        subscribeEventBus();
         calcFabMarginsInPixels();
         view.setUserNameTextView(preferences.getUserName());
         view.setViewPagerAndTabsLayout(getViewPagerFragments(), getTabsLayoutsIds(),
                 getTabSelectedListener(), INITIAL_TAB_LAYOUT_POSITION);
+    }
+
+    private void subscribeEventBus() {
+        if(!eventBus.isRegistered(this)){
+            eventBus.register(this);
+        }
+    }
+
+    private void unsubscribeEventBus(){
+        if(eventBus.isRegistered(this)){
+            eventBus.unregister(this);
+        }
     }
 
     private void calcFabMarginsInPixels() {
@@ -50,6 +69,16 @@ class MainPresenter implements MainContract.Presenter{
     public void onFabClicked() {
         view.hideFab();
         view.openNewPostFragment();
+    }
+
+    @Override
+    public void destroy() {
+        unsubscribeEventBus();
+    }
+
+    @Subscribe
+    public void onNearbyPostClicked(NearbyPostClickedEvent event){
+        view.openNearbyPostFragment(event.getNearbyPostModel());
     }
 
     private TabLayout.OnTabSelectedListener getTabSelectedListener() {

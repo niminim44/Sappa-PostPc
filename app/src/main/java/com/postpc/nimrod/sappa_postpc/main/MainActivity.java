@@ -13,9 +13,13 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.newpost.NewPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
+import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 import java.util.Objects;
@@ -51,19 +55,20 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        presenter = new MainPresenter(this, new Preferences(getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)), new UiUtils());
+        presenter = new MainPresenter(this, new Preferences(getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)),
+                new UiUtils(), EventBus.getDefault());
         presenter.init();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        showFab();
     }
 
     @Override
-    public void showFab() {
-        fab.setVisibility(View.VISIBLE);
+    protected void onDestroy() {
+        presenter.destroy();
+        super.onDestroy();
     }
 
     @Override
@@ -120,6 +125,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         if(fab.getVisibility() == View.GONE){
             slideUp(fab, fabMarginsInPx);
         }
+    }
+
+    @Override
+    public void openNearbyPostFragment(NearbyPostModel nearbyPostModel) {
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, new NearbyPostFragment())
+                .addToBackStack("nearby_post_fragment")
+                .commit();
+        container.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.fab)

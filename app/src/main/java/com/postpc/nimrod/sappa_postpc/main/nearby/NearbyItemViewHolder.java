@@ -8,7 +8,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.main.events.NearbyPostClickedEvent;
 import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +34,9 @@ public class NearbyItemViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.description_text_view)
     TextView descriptionTextView;
 
+    @BindView(R.id.ripple_view)
+    View rippleView;
+
     NearbyItemViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
@@ -45,5 +51,10 @@ public class NearbyItemViewHolder extends RecyclerView.ViewHolder {
                 .apply(new RequestOptions().override(IMAGE_VIEW_WIDTH_IN_DP, IMAGE_VIEW_HEIGHT_IN_DP))
                 .apply(new RequestOptions().centerCrop())
                 .into(imageView);
+        rippleView.setOnClickListener(getPostClickedListener(nearbyPostModel));
+    }
+
+    private View.OnClickListener getPostClickedListener(NearbyPostModel nearbyPostModel) {
+        return view -> EventBus.getDefault().post(new NearbyPostClickedEvent(nearbyPostModel));
     }
 }

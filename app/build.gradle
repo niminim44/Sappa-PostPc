@@ -67,5 +67,7 @@ dependencies {
     //expandable layout library
     implementation 'com.github.aakira:expandable-layout:1.6.0@aar'
 
+    //eventbus
+    implementation 'org.greenrobot:eventbus:3.1.1'
 
 }
