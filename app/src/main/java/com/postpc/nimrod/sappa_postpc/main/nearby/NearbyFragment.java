@@ -45,6 +45,8 @@ public class NearbyFragment extends Fragment implements NearbyContract.View{
                              Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.fragment_nearby, container, false);
         ButterKnife.bind(this, v);
+
+        //TODO - Data supplier currently irrelevant, data retrieval is done asynchronously in NearbyPresenter by Firebase.
         presenter = new NearbyPresenter(this, new FakeDataSupplier());
         presenter.init();
         return v;

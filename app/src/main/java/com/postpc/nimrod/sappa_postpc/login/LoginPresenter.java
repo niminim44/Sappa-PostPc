@@ -20,7 +20,6 @@ class LoginPresenter implements LoginContract.Presenter {
 
     private static final String EMAIL = "email";
     private static final String ID = "id";
-
     private static final String NAME = "name";
 
 
@@ -51,9 +50,11 @@ class LoginPresenter implements LoginContract.Presenter {
         }
     }
 
+    //TODO - I return 'true' to skip the log in screen.
     private boolean isLoggedIn() {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        return accessToken != null;
+        return true;
+//        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+//        return accessToken != null;
     }
 
     @Override
