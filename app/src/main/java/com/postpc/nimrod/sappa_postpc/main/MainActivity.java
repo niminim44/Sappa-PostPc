@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void openNearbyPostFragment(NearbyPostModel nearbyPostModel) {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.container, new NearbyPostFragment())
+                .add(R.id.container, NearbyPostFragment.newInstance(nearbyPostModel))
                 .addToBackStack("nearby_post_fragment")
                 .commit();
         container.setVisibility(View.VISIBLE);
