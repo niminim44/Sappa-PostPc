@@ -8,6 +8,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -115,5 +116,15 @@ public class MyPostFragment extends Fragment implements MyPostContract.View{
     @OnClick(R.id.back_button)
     public void onBackButtonClicked(){
         presenter.backButtonClicked();
+    }
+
+    @OnClick(R.id.edit_post_button)
+    public void onEditClicked(){
+        presenter.onEditClicked();
+    }
+
+    @OnClick(R.id.delete_post_button)
+    public void onDeleteClicked(){
+        presenter.onDeleteClicked();
     }
 }

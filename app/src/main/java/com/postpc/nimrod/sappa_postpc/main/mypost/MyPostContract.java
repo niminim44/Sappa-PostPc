@@ -26,6 +26,10 @@ public interface MyPostContract {
         void init();
 
         void backButtonClicked();
+
+        void onEditClicked();
+
+        void onDeleteClicked();
     }
 
 }

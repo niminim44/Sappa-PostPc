@@ -43,6 +43,16 @@ public class MyPostPresenter implements MyPostContract.Presenter{
         view.callOnBackPressed();
     }
 
+    @Override
+    public void onEditClicked() {
+
+    }
+
+    @Override
+    public void onDeleteClicked() {
+
+    }
+
     private MyPostModel toMyPostModel(Bundle args) {
         return new MyPostModel(
                 args.getString(IMAGE_URL),
