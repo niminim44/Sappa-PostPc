@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
+import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
 import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
 
 import java.util.List;
@@ -32,6 +33,8 @@ public interface MainContract {
         void slideUpFab(float fabMarginsInPx);
 
         void openNearbyPostFragment(NearbyPostModel nearbyPostModel);
+
+        void openMyPostFragment(MyPostModel myPostModel);
     }
 
     interface Presenter{

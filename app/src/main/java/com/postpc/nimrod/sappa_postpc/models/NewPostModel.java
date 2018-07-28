@@ -16,13 +16,14 @@ public class NewPostModel {
     private String userID;
     private String contact;
     private Long phone;
+    private String category;
     //TODO - add category field (String or CONSTANT int) so we can filter posts when retrieving nearby posts.
 
     // Empty constructor for Firebase to retrieve data.
     public NewPostModel() {}
 
     // Main constructor.
-    public NewPostModel(String imageUrl, String title, String description, double latitude, double longitude, String userID, String contact, Long phone) {
+    public NewPostModel(String imageUrl, String title, String description, double latitude, double longitude, String userID, String contact, Long phone, String category) {
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;
@@ -31,6 +32,11 @@ public class NewPostModel {
         this.userID = userID;
         this.contact = contact;
         this.phone = phone;
+        this.category = category;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     // Returns img URL of the stored file in Firebase Storage.

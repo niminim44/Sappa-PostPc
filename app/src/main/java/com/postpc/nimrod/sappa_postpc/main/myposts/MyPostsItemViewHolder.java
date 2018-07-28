@@ -8,7 +8,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.main.events.MyPostClickedEvent;
 import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +30,9 @@ public class MyPostsItemViewHolder extends RecyclerView.ViewHolder{
     @BindView(R.id.description_text_view)
     TextView descriptionTextView;
 
+    @BindView(R.id.ripple_view)
+    View rippleView;
+
     MyPostsItemViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
@@ -40,5 +46,10 @@ public class MyPostsItemViewHolder extends RecyclerView.ViewHolder{
                 .apply(new RequestOptions().override(IMAGE_VIEW_WIDTH_IN_DP, IMAGE_VIEW_HEIGHT_IN_DP))
                 .apply(new RequestOptions().centerCrop())
                 .into(imageView);
+        rippleView.setOnClickListener(getPostClickedListener(myPostModel));
+    }
+
+    private View.OnClickListener getPostClickedListener(MyPostModel myPostModel) {
+        return view -> EventBus.getDefault().post(new MyPostClickedEvent(myPostModel));
     }
 }

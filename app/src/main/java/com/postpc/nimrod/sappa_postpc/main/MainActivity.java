@@ -16,6 +16,7 @@ import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.newpost.NewPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
+import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
 import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
@@ -134,6 +135,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 .addToBackStack("nearby_post_fragment")
                 .commit();
         container.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void openMyPostFragment(MyPostModel myPostModel) {
+//        getSupportFragmentManager().beginTransaction()
+//                .addToBackStack(R.id.container, MyPostFragment.newInstance(myPostModel));
     }
 
     @OnClick(R.id.fab)

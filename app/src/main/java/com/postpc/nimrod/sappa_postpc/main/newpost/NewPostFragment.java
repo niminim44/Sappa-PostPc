@@ -7,7 +7,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -21,8 +20,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -33,8 +30,6 @@ import com.google.firebase.storage.UploadTask;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.models.NewPostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
-
-import butterknife.BindView;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
@@ -136,48 +131,42 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
             UploadTask uploadTask = ref.putFile(imageUri);
 
             //TODO - use irlTask to display progress bar somewhere.
-            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        // Throw task.getException();
-                        CharSequence text = "Failed image upload to storage task";
-                        Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
-                    }
-
-                    // Continue with the task to get the download URL
-                    return ref.getDownloadUrl();
+            Task<Uri> urlTask = uploadTask.continueWithTask(task -> {
+                if (!task.isSuccessful()) {
+                    // Throw task.getException();
+                    CharSequence text = "Failed image upload to storage task";
+                    Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
                 }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
 
-                        CharSequence text = "Image uploaded to storage";
-                        Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
+                // Continue with the task to get the download URL
+                return ref.getDownloadUrl();
+            }).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
 
-                        // Add post to DB.
-                        NewPostModel newPost = new NewPostModel(downloadUri.toString(),
-                                titleTextView.getText().toString(),
-                                descriptionTextView.getText().toString(),
-                                latitude,
-                                longitude,
-                                userId,
-                                nameTextView.getText().toString(),
-                                Long.parseLong(phoneTextView.getText().toString()));
+                    CharSequence text = "Image uploaded to storage";
+                    Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
 
-                        // Write a message to the database.
-                        myRef.child(key).setValue(newPost);
+                    // Add post to DB.
+                    NewPostModel newPost = new NewPostModel(downloadUri.toString(),
+                            titleTextView.getText().toString(),
+                            descriptionTextView.getText().toString(),
+                            latitude,
+                            longitude,
+                            userId,
+                            nameTextView.getText().toString(),
+                            Long.parseLong(phoneTextView.getText().toString()), "default");
 
-                        text = "Published successfully:}";
-                        Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
+                    // Write a message to the database.
+                    myRef.child(key).setValue(newPost);
 
-                    } else {
-                        // Handle failures.
-                        CharSequence text = "Failed image upload to storage";
-                        Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
-                    }
+                    text = "Published successfully:}";
+                    Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
+
+                } else {
+                    // Handle failures.
+                    CharSequence text = "Failed image upload to storage";
+                    Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
                 }
             });
 

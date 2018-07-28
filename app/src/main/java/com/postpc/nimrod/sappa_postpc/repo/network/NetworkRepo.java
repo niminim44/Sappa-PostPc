@@ -50,10 +50,10 @@ public class NetworkRepo implements Repo {
 
     private List<MyPostModel> getMyPosts() {
         List<MyPostModel> myPosts = new ArrayList<>();
-        myPosts.add(new MyPostModel("https://picsum.photos/300/200/?image=95", "DINING TABLE", FAKE_DESCRIPTION));
-        myPosts.add(new MyPostModel("https://picsum.photos/300/200/?image=656", "MOUSE< WORKING", FAKE_DESCRIPTION));
-        myPosts.add(new MyPostModel("https://picsum.photos/300/200/?image=660", "TWO CHAIRS", FAKE_DESCRIPTION));
-        myPosts.add(new MyPostModel("https://picsum.photos/600/400/?image=1013", "COFFEE MUG", FAKE_DESCRIPTION));
+        myPosts.add(new MyPostModel("https://picsum.photos/300/200/?image=95", "DINING TABLE", FAKE_DESCRIPTION, "default"));
+        myPosts.add(new MyPostModel("https://picsum.photos/300/200/?image=656", "MOUSE< WORKING", FAKE_DESCRIPTION, "default"));
+        myPosts.add(new MyPostModel("https://picsum.photos/300/200/?image=660", "TWO CHAIRS", FAKE_DESCRIPTION, "default"));
+        myPosts.add(new MyPostModel("https://picsum.photos/600/400/?image=1013", "COFFEE MUG", FAKE_DESCRIPTION, "default"));
         return myPosts;
     }
 

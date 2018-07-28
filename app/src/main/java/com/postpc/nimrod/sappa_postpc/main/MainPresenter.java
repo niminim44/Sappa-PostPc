@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.main.events.MyPostClickedEvent;
 import com.postpc.nimrod.sappa_postpc.main.events.NearbyPostClickedEvent;
 import com.postpc.nimrod.sappa_postpc.main.myposts.MyPostsFragment;
 import com.postpc.nimrod.sappa_postpc.main.nearby.NearbyFragment;
@@ -79,6 +80,11 @@ class MainPresenter implements MainContract.Presenter{
     @Subscribe
     public void onNearbyPostClicked(NearbyPostClickedEvent event){
         view.openNearbyPostFragment(event.getNearbyPostModel());
+    }
+
+    @Subscribe
+    public void onMyPostClicked(MyPostClickedEvent event){
+        view.openMyPostFragment(event.getMyPostModel());
     }
 
     private TabLayout.OnTabSelectedListener getTabSelectedListener() {
