@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.main.mypost.MyPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.newpost.NewPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
@@ -151,8 +152,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void openMyPostFragment(MyPostModel myPostModel) {
-//        getSupportFragmentManager().beginTransaction()
-//                .addToBackStack(R.id.container, MyPostFragment.newInstance(myPostModel));
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, MyPostFragment.newInstance(myPostModel))
+                .addToBackStack("my_post_fragment")
+                .commit();
+        container.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.fab)

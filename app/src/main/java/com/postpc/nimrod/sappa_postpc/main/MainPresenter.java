@@ -99,11 +99,13 @@ class MainPresenter implements MainContract.Presenter{
     @Subscribe
     public void onNearbyPostClicked(NearbyPostClickedEvent event){
         view.openNearbyPostFragment(event.getNearbyPostModel());
+        view.slideDownFab(fabMarginsInPx);
     }
 
     @Subscribe
     public void onMyPostClicked(MyPostClickedEvent event){
         view.openMyPostFragment(event.getMyPostModel());
+        view.slideDownFab(fabMarginsInPx);
     }
 
     private TabLayout.OnTabSelectedListener getTabSelectedListener() {

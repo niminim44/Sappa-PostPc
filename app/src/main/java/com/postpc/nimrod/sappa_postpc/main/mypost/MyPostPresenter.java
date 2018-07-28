@@ -2,6 +2,7 @@ package com.postpc.nimrod.sappa_postpc.main.mypost;
 
 import android.os.Bundle;
 
+import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
 import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
 
 public class MyPostPresenter implements MyPostContract.Presenter{
@@ -14,30 +15,40 @@ public class MyPostPresenter implements MyPostContract.Presenter{
     static final String CATEGORY = "category";
 
     private MyPostContract.View view;
+    private UiUtils uiUtils;
 
-    MyPostPresenter(MyPostContract.View view) {
+    MyPostPresenter(MyPostContract.View view, UiUtils uiUtils) {
         this.view = view;
+        this.uiUtils = uiUtils;
     }
 
 
     @Override
     public void init() {
-//        Bundle args = view.getPostArguments();
-//        MyPostModel nearbyPostModel = toMyPostModel(args);
-//        view.setImage(nearbyPostModel.getImageUrl(),
-//                (int)uiUtils.convertPixelsToDp(view.getScreenWidth()), 250);
-//        view.setTitle(nearbyPostModel.getTitle());
-//        view.setDistance(nearbyPostModel.getDistance());
-//        view.setDescription(nearbyPostModel.getDescription());
-//        view.setCategory(nearbyPostModel.getCategory());
+        Bundle args = view.getPostArguments();
+        MyPostModel nearbyPostModel = toMyPostModel(args);
+        String imageUrl = nearbyPostModel.getImageUrl();
+        if(imageUrl != null){
+            view.setImage(
+                    nearbyPostModel.getImageUrl(),
+                    (int)uiUtils.convertPixelsToDp(view.getScreenWidth()), 250);
+        }
+        view.setTitle(nearbyPostModel.getTitle());
+        view.setDescription(nearbyPostModel.getDescription());
+        view.setCategory(nearbyPostModel.getCategory());
+    }
+
+    @Override
+    public void backButtonClicked() {
+        view.callOnBackPressed();
     }
 
     private MyPostModel toMyPostModel(Bundle args) {
-        return null;
-//        return new MyPostModel(
-//                args.getString(IMAGE_URL),
-//                args.getString(TITLE),
-//
-//        );
+        return new MyPostModel(
+                args.getString(IMAGE_URL),
+                args.getString(TITLE),
+                args.getString(DESCRIPTION),
+                args.getString(CATEGORY)
+        );
     }
 }
