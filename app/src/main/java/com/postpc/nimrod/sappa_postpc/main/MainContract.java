@@ -24,8 +24,6 @@ public interface MainContract {
 
         void openNewPostFragment();
 
-        void hideFab();
-
         void setFabIcon(int iconResourceId);
 
         void slideDownFab(float fabMarginsInPx);
@@ -46,5 +44,7 @@ public interface MainContract {
         void destroy();
 
         void setCurrentPage(int currentPagePosition);
+
+        void onBackPressed();
     }
 }

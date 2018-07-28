@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        presenter.onBackPressed();
     }
 
     @Override
@@ -118,11 +119,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 .addToBackStack("new_post")
                 .commit();
         container.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideFab() {
-        fab.setVisibility(View.GONE);
     }
 
     @Override

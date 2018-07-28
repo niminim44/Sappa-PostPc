@@ -73,7 +73,7 @@ class MainPresenter implements MainContract.Presenter{
             case NEARBY_POSITION:
                 break;
             case MYPOSTS_POSITION:
-                view.hideFab();
+                view.slideDownFab(fabMarginsInPx);
                 view.openNewPostFragment();
                 break;
             case SETTINGS_POSITION:
@@ -89,6 +89,11 @@ class MainPresenter implements MainContract.Presenter{
     @Override
     public void setCurrentPage(int currentPagePosition) {
         this.currentPagePosition = currentPagePosition;
+    }
+
+    @Override
+    public void onBackPressed() {
+        view.slideUpFab(fabMarginsInPx);
     }
 
     @Subscribe

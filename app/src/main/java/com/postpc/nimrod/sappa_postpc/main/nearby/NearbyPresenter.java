@@ -74,7 +74,13 @@ class NearbyPresenter implements NearbyContract.Presenter{
 
                     // Filter and convert to NearbyPostModel.
 //                    if ((dist[0] * 0.001) < range) {
-                        nearbyPostModels.add(new NearbyPostModel(post.getImageUrl(), post.getTitle(), post.getDescription(), "", Math.round(dist[0] * 0.001) + " km away", post.getCategory()));
+                        nearbyPostModels.add(new NearbyPostModel(
+                                post.getImageUrl(),
+                                post.getTitle(),
+                                post.getDescription(),
+                                "",
+                                Math.round(dist[0] * 0.001) + " km away",
+                                post.getCategory()));
 //                    }
                 }
 
