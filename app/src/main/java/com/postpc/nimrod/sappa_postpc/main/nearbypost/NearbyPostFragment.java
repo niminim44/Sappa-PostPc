@@ -89,9 +89,9 @@ public class NearbyPostFragment extends Fragment implements NearbyPostContract.V
 
     @Override
     public void setImage(String imageUrl, int screenWidth, int screenHeight) {
-//        Glide.with(imageView.getContext())
-//                .load(imageUrl)
-//                .into(imageView);
+        Glide.with(imageView.getContext())
+                .load(imageUrl)
+                .into(imageView);
     }
 
     @Override
