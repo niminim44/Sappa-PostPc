@@ -22,4 +22,23 @@
     <string name="i_need_it">I need It!</string>
     <string name="edit_post_string">I need to change something</string>
     <string name="delete_this_post">Delete this post</string>
+    <string name="new_post_title">What are you giving:</string>
+    <string name="title">Title</string>
+    <string name="upload_an_image"><u>UPLOAD AN IMAGE</u></string>
+    <string name="description">Description</string>
+    <string name="empty_description">0/140</string>
+    <string name="category">Category</string>
+    <string name="electronics">ELECTRONICS</string>
+    <string name="furniture">FURNITURE</string>
+    <string name="books">BOOKS</string>
+    <string name="clothing">CLOTHING</string>
+    <string name="sports">SPORTS</string>
+    <string name="children_and_infants"><![CDATA[CHILDREN & INFANTS]]></string>
+    <string name="other">OTHER</string>
+    <string name="publish">Publish!</string>
+    <string name="failed_to_upload_image">Failed image upload to storage task</string>
+    <string name="image_uploaded_successfully">Image uploaded to storage</string>
+    <string name="post_published_successfully">Published successfully</string>
+    <string name="failed_uploading_new_post" >Failed image upload to storage</string>
+
 </resources>
