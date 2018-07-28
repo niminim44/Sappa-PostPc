@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "52784982700",
+    "firebase_url": "https://sappa-postpc.firebaseio.com",
+    "project_id": "sappa-postpc",
+    "storage_bucket": "sappa-postpc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:52784982700:android:a17a231b68f33a85",
+        "android_client_info": {
+          "package_name": "com.postpc.nimrod.sappa_postpc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "52784982700-2r2r3sdo0h8vn484j6ln9583nh7cf1cu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.postpc.nimrod.sappa_postpc",
+            "certificate_hash": "a72dd4329e8546869a9b7e3afd7a498fa851a4f0"
+          }
+        },
+        {
+          "client_id": "52784982700-sv4aedjeci6qjoeiq7t4t4f6n0i3gnha.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABIk0nWgF2CFEb6Wakxb4d3IKswZuSLbE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "52784982700-sv4aedjeci6qjoeiq7t4t4f6n0i3gnha.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
