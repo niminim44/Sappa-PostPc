@@ -33,6 +33,7 @@ class MainPresenter implements MainContract.Presenter{
     private EventBus eventBus;
     private MainContract.View view;
     private float fabMarginsInPx;
+    private int currentPagePosition;
 
     MainPresenter(MainContract.View view, Preferences preferences, UiUtils uiUtils, EventBus eventBus) {
         this.view = view;
@@ -68,13 +69,26 @@ class MainPresenter implements MainContract.Presenter{
 
     @Override
     public void onFabClicked() {
-        view.hideFab();
-        view.openNewPostFragment();
+        switch (currentPagePosition){
+            case NEARBY_POSITION:
+                break;
+            case MYPOSTS_POSITION:
+                view.hideFab();
+                view.openNewPostFragment();
+                break;
+            case SETTINGS_POSITION:
+                break;
+        }
     }
 
     @Override
     public void destroy() {
         unsubscribeEventBus();
+    }
+
+    @Override
+    public void setCurrentPage(int currentPagePosition) {
+        this.currentPagePosition = currentPagePosition;
     }
 
     @Subscribe

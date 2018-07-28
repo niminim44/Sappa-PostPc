@@ -1,15 +1,19 @@
 package com.postpc.nimrod.sappa_postpc.main.newpost;
 
 
+import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +22,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.github.aakira.expandablelayout.ExpandableLayoutListenerAdapter;
+import com.github.aakira.expandablelayout.ExpandableLinearLayout;
+import com.github.aakira.expandablelayout.Utils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,8 +35,17 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.main.settings.SettingsRecyclerViewAdapter;
+import com.postpc.nimrod.sappa_postpc.main.utils.LocationUtils;
 import com.postpc.nimrod.sappa_postpc.models.NewPostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import java.util.Objects;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
@@ -44,7 +60,7 @@ import static android.content.Context.MODE_PRIVATE;
 /**
  * The new post fragment.
  */
-public class NewPostFragment extends Fragment implements View.OnClickListener {
+public class NewPostFragment extends Fragment implements View.OnClickListener, NewPostContract.View{
 
     private static int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;     // whatever...
 
@@ -62,7 +78,6 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
     Button publishBtn;
     Button cameraBtn;
     Button galleryBtn;
-    View v;
     ImageView imageView;
     EditText titleTextView;
     EditText descriptionTextView;
@@ -70,6 +85,18 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
     EditText phoneTextView;
     Uri imageUri;
     String key;
+    private LocationUtils locationUtils;
+    private ExpandableLinearLayout expandableLayout;
+
+    @BindView(R.id.button)
+    ConstraintLayout buttonLayout;
+
+    @BindView(R.id.category_view)
+    CardView categoryView;
+
+
+    private boolean expandState = true;
+    private String category = "general";
 
 
     public NewPostFragment() {
@@ -81,8 +108,8 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate fragment layout.
-        v = inflater.inflate(R.layout.fragment_new_post, container, false);
-
+        View v = inflater.inflate(R.layout.fragment_new_post, container, false);
+        ButterKnife.bind(this, v);
         // Get Firebase "Realtime DB" and "Storage" references.
         mStorageRef = FirebaseStorage.getInstance().getReference(); // Initialize reference to Storage.
         database = FirebaseDatabase.getInstance();  // Retrieve an instance of the DB.
@@ -94,6 +121,26 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
         descriptionTextView = v.findViewById(R.id.description_text_view);
         nameTextView = v.findViewById(R.id.name_text_view);
         phoneTextView = v.findViewById(R.id.phone_text_view);
+        expandableLayout = v.findViewById(R.id.expandableLayout);
+        expandState = false;
+        expandableLayout.setInRecyclerView(false);
+        expandableLayout.setInterpolator(Utils.createInterpolator(Utils.FAST_OUT_LINEAR_IN_INTERPOLATOR));
+        expandableLayout.setExpanded(expandState);
+        expandableLayout.setListener(new ExpandableLayoutListenerAdapter() {
+            @Override
+            public void onPreOpen() {
+                createRotateAnimator(buttonLayout, 0f, 180f).start();
+                expandState = true;
+            }
+
+            @Override
+            public void onPreClose() {
+                createRotateAnimator(buttonLayout, 180f, 0f).start();
+                expandState = false;
+            }
+        });
+        buttonLayout.setRotation(expandState ? 180f : 0f);
+        categoryView.setOnClickListener(view -> onClickButton(expandableLayout));
 
         // Add functionality to buttons.
         publishBtn = v.findViewById(R.id.publish_btn);
@@ -103,11 +150,25 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
         cameraBtn.setOnClickListener(this);
         galleryBtn.setOnClickListener(this);
 
-        // Initialize location provider.
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
-
+        locationUtils = new LocationUtils(requireContext(), requireActivity());
         // Return inflated fragment view.
         return v;
+    }
+
+    private void onClickButton(ExpandableLinearLayout expandableLayout) {
+        expandableLayout.toggle();
+    }
+
+    private ObjectAnimator createRotateAnimator(final View target, final float from, final float to) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(target, "rotation", from, to);
+        animator.setDuration(300);
+        animator.setInterpolator(Utils.createInterpolator(Utils.LINEAR_INTERPOLATOR));
+        return animator;
+    }
+
+    @OnClick(R.id.electronics_text_view)
+    public void onCategoryClicked(){
+        category = "electronics";
     }
 
     @Override
@@ -121,7 +182,10 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
             // Get additional info for post.
             Preferences preferences = new Preferences(requireContext().getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE));
             String userId = preferences.getUserId();
-            getDeviceLocation();    //TODO - this method should probably become a separate module becouse we need current location in nearby posts filtering when getting data.
+            locationUtils.getDeviceLocation(location -> {
+                longitude = location.getLongitude();
+                latitude = location.getLatitude();
+            });    //TODO - this method should probably become a separate module becouse we need current location in nearby posts filtering when getting data.
 
             // Use push() to create a post unique key in the node containing posts.
             key = myRef.push().getKey();
@@ -155,7 +219,7 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
                             longitude,
                             userId,
                             nameTextView.getText().toString(),
-                            Long.parseLong(phoneTextView.getText().toString()), "default");
+                            Long.parseLong(phoneTextView.getText().toString()), category);
 
                     // Write a message to the database.
                     myRef.child(key).setValue(newPost);
@@ -217,48 +281,6 @@ public class NewPostFragment extends Fragment implements View.OnClickListener {
                     imageView.setImageURI(selectedImage);
                 }
                 break;
-        }
-    }
-
-    //TODO - as I mentioned above, I need the user location in NearbyPresenter to filter the nearby posts, so this method should probably a module on it's own to use everywhere we need location.
-    // Coppied this from somewhere, didn't went much into it, just got it to work.
-    private void getDeviceLocation() {
-        if (ContextCompat.checkSelfPermission(requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Permission is not granted
-            //TODO - should we show some explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-            } else {
-                // No explanation needed; request the permission
-                ActivityCompat.requestPermissions(requireActivity(),
-                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
-                // MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        } else {
-            // Permission has already been granted
-            mFusedLocationClient.getLastLocation()
-                    .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // Got last known location. In some rare situations this can be null.
-
-                            if (location != null) {
-                                // Logic to handle location object
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
-                            }
-                        }
-                    });
         }
     }
 

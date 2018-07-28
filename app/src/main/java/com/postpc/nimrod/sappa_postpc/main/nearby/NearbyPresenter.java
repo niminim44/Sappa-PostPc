@@ -73,9 +73,9 @@ class NearbyPresenter implements NearbyContract.Presenter{
                     Location.distanceBetween(myLatitude, myLongitude, post.getLatitude(), post.getLongitude(), dist);
 
                     // Filter and convert to NearbyPostModel.
-                    if ((dist[0] * 0.001) < range) {
+//                    if ((dist[0] * 0.001) < range) {
                         nearbyPostModels.add(new NearbyPostModel(post.getImageUrl(), post.getTitle(), post.getDescription(), "", Math.round(dist[0] * 0.001) + " km away", post.getCategory()));
-                    }
+//                    }
                 }
 
                 // Finish data retrieval as in loadPostsToRecyclerView() method.

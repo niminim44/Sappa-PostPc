@@ -44,5 +44,7 @@ public interface MainContract {
         void onFabClicked();
 
         void destroy();
+
+        void setCurrentPage(int currentPagePosition);
     }
 }

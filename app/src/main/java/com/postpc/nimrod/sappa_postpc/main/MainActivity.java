@@ -83,6 +83,22 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setupViewPager(viewPagerFragments);
         setupTabsLayout(tabsLayoutsIds, tabSelectedListener);
         viewPager.setCurrentItem(currentItemPosition);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                presenter.setCurrentPage(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
