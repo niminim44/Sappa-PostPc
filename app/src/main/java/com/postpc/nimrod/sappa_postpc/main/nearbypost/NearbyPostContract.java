@@ -21,6 +21,8 @@ public interface NearbyPostContract {
         int getScreenHeight();
 
         int getScreenWidth();
+
+        void setCategory(String category);
     }
 
     interface Presenter{

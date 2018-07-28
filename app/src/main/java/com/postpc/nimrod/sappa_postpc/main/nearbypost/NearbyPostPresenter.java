@@ -12,6 +12,7 @@ class NearbyPostPresenter implements NearbyPostContract.Presenter{
     static final String IMAGE_URL = "image_url";
     static final String DISTANCE = "distance";
     static final String LOCATION = "location";
+    static final String CATEGORY = "category";
 
     private NearbyPostContract.View view;
     private UiUtils uiUtils;
@@ -30,6 +31,7 @@ class NearbyPostPresenter implements NearbyPostContract.Presenter{
         view.setTitle(nearbyPostModel.getTitle());
         view.setDistance(nearbyPostModel.getDistance());
         view.setDescription(nearbyPostModel.getDescription());
+        view.setCategory(nearbyPostModel.getCategory());
     }
 
     private NearbyPostModel toNearbyPostModel(Bundle args) {
@@ -38,7 +40,8 @@ class NearbyPostPresenter implements NearbyPostContract.Presenter{
                 args.getString(TITLE),
                 args.getString(DESCRIPTION),
                 args.getString(LOCATION),
-                args.getString(DISTANCE));
+                args.getString(DISTANCE),
+                args.getString(CATEGORY));
     }
 
     @Override

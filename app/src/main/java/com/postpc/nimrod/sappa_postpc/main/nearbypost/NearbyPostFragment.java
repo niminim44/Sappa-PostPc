@@ -3,6 +3,7 @@ package com.postpc.nimrod.sappa_postpc.main.nearbypost;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.CATEGORY;
 import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.DESCRIPTION;
 import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.DISTANCE;
 import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.IMAGE_URL;
@@ -46,6 +48,9 @@ public class NearbyPostFragment extends Fragment implements NearbyPostContract.V
     @BindView(R.id.description_text_view)
     TextView descriptionTextView;
 
+    @BindView(R.id.category_text_view)
+    TextView categoryTextView;
+
 
     public static NearbyPostFragment newInstance(NearbyPostModel nearbyPostModel){
         NearbyPostFragment myFragment = new NearbyPostFragment();
@@ -55,6 +60,7 @@ public class NearbyPostFragment extends Fragment implements NearbyPostContract.V
         args.putString(IMAGE_URL, nearbyPostModel.getImageUrl());
         args.putString(DISTANCE, nearbyPostModel.getDistance());
         args.putString(LOCATION, nearbyPostModel.getLocation());
+        args.putString(CATEGORY, nearbyPostModel.getCategory());
         myFragment.setArguments(args);
         return myFragment;
     }
@@ -89,8 +95,11 @@ public class NearbyPostFragment extends Fragment implements NearbyPostContract.V
 
     @Override
     public void setImage(String imageUrl, int screenWidth, int screenHeight) {
+
+        CircularProgressDrawable circularProgressBar = new CircularProgressDrawable(imageView.getContext());
         Glide.with(imageView.getContext())
                 .load(imageUrl)
+                .apply(new RequestOptions().placeholder(circularProgressBar))
                 .into(imageView);
     }
 
@@ -121,5 +130,10 @@ public class NearbyPostFragment extends Fragment implements NearbyPostContract.V
         DisplayMetrics displayMetrics = new DisplayMetrics();
         Objects.requireNonNull(getActivity()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.widthPixels;
+    }
+
+    @Override
+    public void setCategory(String category) {
+        categoryTextView.setText(category);
     }
 }
