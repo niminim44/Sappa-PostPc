@@ -43,7 +43,9 @@
     <string name="contact_info_enter_at_least_one">Contact info (enter at least one)</string>
     <string name="email">Email</string>
     <string name="item_location">Item location</string>
-    <string name="use_current_location"><u>USE CURRENT LOCATION</u>\u0009 or \u0009<u>ENTER AN ADDRESS</u></string>
+    <string name="use_current_location"><u>USE CURRENT LOCATION</u></string>
     <string name="phone_number">Phone number</string>
+    <string name="or">or</string>
+    <string name="enter_address"><u>ENTER AN ADDRESS</u></string>
 
 </resources>

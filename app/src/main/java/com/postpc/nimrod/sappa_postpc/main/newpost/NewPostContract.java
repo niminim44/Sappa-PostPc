@@ -32,6 +32,28 @@ public interface NewPostContract {
         void initCategoryRadioGroup();
 
         void setCategoryTitle(String category);
+
+        void initTitleEditTextListener();
+
+        void initDescriptionEditTextListener();
+
+        void initEmailEditTextListener();
+
+        void initPhoneEditTextListener();
+
+        void enablePublishButton();
+
+        void changeUseCurrentLocationTextViewColor(int colorResourceId);
+
+        void showLocationProgressBar();
+
+        void hideLocationProgressBar();
+
+        void setUseCurrentLocationTextViewUnclickable();
+
+        void setDescriptionLength(int length, int maxLength);
+
+        void setDescriptionLengthColor(int colorResourceId);
     }
 
     interface Presenter{
@@ -47,5 +69,15 @@ public interface NewPostContract {
         void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent);
 
         void onCategorySelected(int categoryId);
+
+        void titleTextChanged(String s);
+
+        void descriptionTextChanged(String s);
+
+        void emailTextChanged(String email);
+
+        void phoneTextChanged(String phone);
+
+        void onUseCurrentLocationClicked();
     }
 }

@@ -1,9 +1,9 @@
 package com.postpc.nimrod.sappa_postpc.main.newpost;
 
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.view.View;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -12,9 +12,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.main.utils.LocationProvider;
 import com.postpc.nimrod.sappa_postpc.main.utils.LocationUtils;
 import com.postpc.nimrod.sappa_postpc.models.NewPostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.SingleSubject;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -28,12 +34,16 @@ class NewPostPresenter implements NewPostContract.Presenter{
     private static final String SPORTS_CATEGORY = "Sports";
     private static final String CHILDREN_CATEGORY = "Children";
     private static final String OTHER_CATEGORY = "Other";
+    private static final Boolean IGNORED_VALUE = true;
+    private static final int DESCRIPTION_MAX_LENGTH = 140;
+    private final LocationProvider locationProvider;
+
+    private PublishSubject<Boolean> fieldChangedPublishSubject = PublishSubject.create();
 
 
 
     private NewPostContract.View view;
     private Preferences prefs;
-    private LocationUtils locationUtils;
     private StorageReference mStorageRef;
     private FirebaseDatabase database;
     private DatabaseReference myRef;
@@ -43,11 +53,16 @@ class NewPostPresenter implements NewPostContract.Presenter{
     private double latitude;
     private Uri imageUri;
     private String selectedRadioButton;
+    private boolean emptyTitle = true;
+    private boolean emptyDescription = true;
+    private boolean validEmail = false;
+    private boolean validPhone = false;
+    private Location currentLocation;
 
-    NewPostPresenter(NewPostContract.View view, Preferences prefs, LocationUtils locationUtils) {
+    NewPostPresenter(NewPostContract.View view, Preferences prefs, LocationProvider locationProvider) {
         this.view = view;
         this.prefs = prefs;
-        this.locationUtils = locationUtils;
+        this.locationProvider = locationProvider;
     }
 
     @Override
@@ -57,6 +72,19 @@ class NewPostPresenter implements NewPostContract.Presenter{
         view.initCategoryLayout(categoryExpandedState);
         view.disablePublishButton();
         view.initCategoryRadioGroup();
+        view.initTitleEditTextListener();
+        view.initDescriptionEditTextListener();
+        view.initEmailEditTextListener();
+        view.initPhoneEditTextListener();
+        listenToFieldChanges();
+    }
+
+    private void listenToFieldChanges() {
+        fieldChangedPublishSubject.observeOn(Schedulers.io())
+                .map(ignored -> mandatoryFieldsAreValid())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(this::refreshPublishButton)
+                .subscribe();
     }
 
     @Override
@@ -73,10 +101,10 @@ class NewPostPresenter implements NewPostContract.Presenter{
     public void onPublishClicked() {
         // Get additional info for post.
         String userId = prefs.getUserId();
-        locationUtils.getDeviceLocation(location -> {
-            longitude = location.getLongitude();
-            latitude = location.getLatitude();
-        });
+//        locationUtils.getDeviceLocation(location -> {
+//            longitude = location.getLongitude();
+//            latitude = location.getLatitude();
+//        });
 
         // Use push() to create a post unique key in the node containing posts.
         String key = myRef.push().getKey();
@@ -177,6 +205,72 @@ class NewPostPresenter implements NewPostContract.Presenter{
                 break;
 
         }
+        fieldChangedPublishSubject.onNext(IGNORED_VALUE);
+    }
+
+    private void refreshPublishButton(Boolean fieldsAreValid) {
+        if(fieldsAreValid){
+            view.enablePublishButton();
+        } else {
+            view.disablePublishButton();
+        }
+    }
+
+    private boolean mandatoryFieldsAreValid() {
+        return  (!emptyTitle) &&
+                (!emptyDescription) &&
+                (validEmail || validPhone) &&
+                (!selectedRadioButton.equals(DEFAULT_CATEGORY)) &&
+                (currentLocation != null);
+    }
+
+    @Override
+    public void titleTextChanged(String title) {
+        emptyTitle = title.isEmpty();
+        fieldChangedPublishSubject.onNext(IGNORED_VALUE);
+    }
+
+    @Override
+    public void descriptionTextChanged(String description) {
+        emptyDescription = description.isEmpty();
+        view.setDescriptionLength(description.length(), DESCRIPTION_MAX_LENGTH);
+        view.setDescriptionLengthColor(description.length() == DESCRIPTION_MAX_LENGTH ? R.color.red : R.color.charcole);
+        fieldChangedPublishSubject.onNext(IGNORED_VALUE);
+    }
+
+    @Override
+    public void emailTextChanged(String email) {
+        validEmail = isValidEmail(email);
+        fieldChangedPublishSubject.onNext(IGNORED_VALUE);
+    }
+
+    @Override
+    public void phoneTextChanged(String phone) {
+        validPhone = isValidPhone(phone);
+        fieldChangedPublishSubject.onNext(IGNORED_VALUE);
+    }
+
+    @Override
+    public void onUseCurrentLocationClicked() {
+        SingleSubject<Location> locationSubject = SingleSubject.create();
+        locationSubject.observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess(location -> {
+                    currentLocation = location;
+                    fieldChangedPublishSubject.onNext(IGNORED_VALUE);
+                    view.changeUseCurrentLocationTextViewColor(R.color.green);
+                    view.setUseCurrentLocationTextViewUnclickable();
+                    view.hideLocationProgressBar();
+                }).subscribe();
+        view.showLocationProgressBar();
+        locationProvider.getLocation(locationSubject);
+    }
+
+    private static boolean isValidPhone(String phone) {
+        return phone.length() == 10;
+    }
+
+    private static boolean isValidEmail(String email) {
+        return !email.isEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private void initFirebaseDatabase() {

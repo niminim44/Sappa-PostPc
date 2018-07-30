@@ -2,6 +2,7 @@ package com.postpc.nimrod.sappa_postpc.main.newpost;
 
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,13 +10,17 @@ import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,15 +29,10 @@ import com.github.aakira.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.github.aakira.expandablelayout.Utils;
 import com.postpc.nimrod.sappa_postpc.R;
-import com.postpc.nimrod.sappa_postpc.main.utils.LocationUtils;
+import com.postpc.nimrod.sappa_postpc.main.utils.LocationProvider;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
-import org.w3c.dom.Text;
-
-import java.util.List;
-
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -76,6 +76,22 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
     @BindView(R.id.category_title_text_view)
     TextView categoryTitleTextView;
 
+    @BindView(R.id.email_edit_text)
+    EditText emailEditText;
+
+    @BindView(R.id.phone_number_edit_text)
+    EditText phoneEditText;
+
+    @BindView(R.id.user_current_location_text_view)
+    TextView useCurrentLocationTextView;
+
+    @BindView(R.id.location_progress_bar)
+    ProgressBar locationProgressBar;
+
+    @BindView(R.id.description_length_text_view)
+    TextView descriptionLengthTextView;
+
+
 
     private NewPostContract.Presenter presenter;
 
@@ -92,7 +108,7 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
         ButterKnife.bind(this, v);
         presenter = new NewPostPresenter(this,
                 new Preferences(requireContext().getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)),
-                new LocationUtils(requireContext(), requireActivity()));
+                new LocationProvider(requireContext()));
         presenter.init();
         return v;
     }
@@ -191,9 +207,145 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
         categoryTitleTextView.setText(category);
     }
 
+    @Override
+    public void initTitleEditTextListener() {
+        titleEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.titleTextChanged(editable.toString());
+            }
+
+        });
+    }
+
+    @Override
+    public void initDescriptionEditTextListener() {
+        descriptionEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.descriptionTextChanged(editable.toString());
+            }
+        });
+    }
+
+    @Override
+    public void initEmailEditTextListener() {
+        emailEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.emailTextChanged(editable.toString());
+            }
+        });
+    }
+
+    @Override
+    public void initPhoneEditTextListener() {
+        phoneEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.phoneTextChanged(editable.toString());
+            }
+        });
+    }
+
+    @Override
+    public void enablePublishButton() {
+        publishButton.setEnabled(true);
+    }
+
+    @Override
+    public void changeUseCurrentLocationTextViewColor(int colorResourceId) {
+        useCurrentLocationTextView.setTextColor(getResources().getColor(colorResourceId));
+    }
+
+    @Override
+    public void showLocationProgressBar() {
+        locationProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLocationProgressBar() {
+        locationProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setUseCurrentLocationTextViewUnclickable() {
+        useCurrentLocationTextView.setClickable(false);
+    }
+
+    @Override
+    public void setDescriptionLength(int length, int maxLength) {
+        String lengthString = String.valueOf(length) + "/" + String.valueOf(maxLength);
+        descriptionLengthTextView.setText(lengthString);
+    }
+
+    @Override
+    public void setDescriptionLengthColor(int colorResourceId) {
+        descriptionLengthTextView.setTextColor(getResources().getColor(colorResourceId));
+    }
+
     @OnClick(R.id.publish_button)
     public void onPublishClicked(){
         presenter.onPublishClicked();
+    }
+
+    @OnClick(R.id.user_current_location_text_view)
+    public void onUseCurrentLocationClicked(){
+        presenter.onUseCurrentLocationClicked();
+    }
+
+    @OnClick(R.id.description_card_view)
+    public void onDescriptionClicked(){
+        focusDescriptionAndOpenKeyboard();
+    }
+
+    private void focusDescriptionAndOpenKeyboard() {
+        descriptionEditText.requestFocus();
+        try{
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(descriptionEditText, InputMethodManager.SHOW_IMPLICIT);
+        }
+        catch (Exception ignored){}
     }
 
 
