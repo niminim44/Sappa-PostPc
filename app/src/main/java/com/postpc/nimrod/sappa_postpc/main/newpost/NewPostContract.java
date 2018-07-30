@@ -21,8 +21,6 @@ public interface NewPostContract {
 
         String getDescription();
 
-        String getContactName();
-
         String getContactPhone();
 
         String getCategory();
@@ -54,6 +52,8 @@ public interface NewPostContract {
         void setDescriptionLength(int length, int maxLength);
 
         void setDescriptionLengthColor(int colorResourceId);
+
+        String getEmail();
     }
 
     interface Presenter{

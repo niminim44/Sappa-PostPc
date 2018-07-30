@@ -13,7 +13,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.utils.LocationProvider;
-import com.postpc.nimrod.sappa_postpc.main.utils.LocationUtils;
 import com.postpc.nimrod.sappa_postpc.models.NewPostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
@@ -45,12 +44,9 @@ class NewPostPresenter implements NewPostContract.Presenter{
     private NewPostContract.View view;
     private Preferences prefs;
     private StorageReference mStorageRef;
-    private FirebaseDatabase database;
     private DatabaseReference myRef;
 
     private boolean categoryExpandedState = false;
-    private double longitude;
-    private double latitude;
     private Uri imageUri;
     private String selectedRadioButton;
     private boolean emptyTitle = true;
@@ -101,10 +97,6 @@ class NewPostPresenter implements NewPostContract.Presenter{
     public void onPublishClicked() {
         // Get additional info for post.
         String userId = prefs.getUserId();
-//        locationUtils.getDeviceLocation(location -> {
-//            longitude = location.getLongitude();
-//            latitude = location.getLatitude();
-//        });
 
         // Use push() to create a post unique key in the node containing posts.
         String key = myRef.push().getKey();
@@ -113,7 +105,6 @@ class NewPostPresenter implements NewPostContract.Presenter{
         final StorageReference ref = mStorageRef.child("images/" + key +".jpg");    // Set image name for storage.
         UploadTask uploadTask = ref.putFile(imageUri);
 
-        //TODO - use irlTask to display progress bar somewhere.
         uploadTask.continueWithTask(task -> getDownloadUrl(ref, task))
                 .addOnCompleteListener(task -> saveNewPost(userId, key, task));
     }
@@ -126,11 +117,13 @@ class NewPostPresenter implements NewPostContract.Presenter{
             NewPostModel newPost = new NewPostModel(downloadUri.toString(),
                     view.getTitle(),
                     view.getDescription(),
-                    latitude,
-                    longitude,
+                    currentLocation.getLatitude(),
+                    currentLocation.getLongitude(),
                     userId,
-                    view.getContactName(),
-                    Long.parseLong(view.getContactPhone()), view.getCategory());
+                    prefs.getUserName(),
+                    Long.parseLong(view.getContactPhone()),
+                    view.getCategory(),
+                    view.getEmail());
 
             // Write a message to the database.
             myRef.child(key).setValue(newPost);
@@ -275,7 +268,7 @@ class NewPostPresenter implements NewPostContract.Presenter{
 
     private void initFirebaseDatabase() {
         mStorageRef = FirebaseStorage.getInstance().getReference(); // Initialize reference to Storage.
-        database = FirebaseDatabase.getInstance();  // Retrieve an instance of the DB.
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference("posts"); // Reference the 'posts'.
     }
 }

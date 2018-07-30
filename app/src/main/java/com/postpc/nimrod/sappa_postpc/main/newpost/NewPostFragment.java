@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
@@ -37,12 +38,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.content.Context.MODE_PRIVATE;
-
-
-//TODO - maybe this fragment should become also the 'edit my post' fragment.
-//TODO - so when it started - maybe it'll get some intent with post position in 'My Posts' array (of even the post object if possible)
-//TODO - to display current post details, so the user updates it and saves by simply uploading it again,
-//TODO - we might save the original image path in post so we don't have to re-uplosd the image if it wasn't changed, just update the details.
 
 /**
  * The new post fragment.
@@ -102,7 +97,7 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_new_post_new, container, false);
         ButterKnife.bind(this, v);
@@ -172,11 +167,6 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
     @Override
     public String getDescription() {
         return descriptionEditText.getText().toString();
-    }
-
-    @Override
-    public String getContactName() {
-        return ""; // TODO: 28/07/2018 implement this
     }
 
     @Override
@@ -322,6 +312,11 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
     @Override
     public void setDescriptionLengthColor(int colorResourceId) {
         descriptionLengthTextView.setTextColor(getResources().getColor(colorResourceId));
+    }
+
+    @Override
+    public String getEmail() {
+        return emailEditText.getText().toString();
     }
 
     @OnClick(R.id.publish_button)

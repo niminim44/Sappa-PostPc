@@ -9,21 +9,20 @@ public class NewPostModel {
     private String imageUrl;
     private String title;
     private String description;
-//    private String location;      //TODO - I stored location as separate latitude/longitude fields, but it may be used for holding street name if we add Maps API.
-//    private String distance;      //TODO - if we decide to use only one PostModel - this field will be very useful.
     private double latitude;
     private double longitude;
     private String userID;
     private String contact;
     private Long phone;
     private String category;
+    private String email;
     //TODO - add category field (String or CONSTANT int) so we can filter posts when retrieving nearby posts.
 
     // Empty constructor for Firebase to retrieve data.
     public NewPostModel() {}
 
     // Main constructor.
-    public NewPostModel(String imageUrl, String title, String description, double latitude, double longitude, String userID, String contact, Long phone, String category) {
+    public NewPostModel(String imageUrl, String title, String description, double latitude, double longitude, String userID, String contact, Long phone, String category, String email) {
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;
@@ -33,6 +32,7 @@ public class NewPostModel {
         this.contact = contact;
         this.phone = phone;
         this.category = category;
+        this.email = email;
     }
 
     public String getCategory() {
@@ -52,7 +52,11 @@ public class NewPostModel {
         return description;
     }
 
-//    public String getLocation() {
+    public String getEmail() {
+        return email;
+    }
+
+    //    public String getLocation() {
 //        return location;
 //    }
 
