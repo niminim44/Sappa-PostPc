@@ -26,6 +26,12 @@ public interface NewPostContract {
         String getContactPhone();
 
         String getCategory();
+
+        void disablePublishButton();
+
+        void initCategoryRadioGroup();
+
+        void setCategoryTitle(String category);
     }
 
     interface Presenter{
@@ -39,5 +45,7 @@ public interface NewPostContract {
         void onPublishClicked();
 
         void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent);
+
+        void onCategorySelected(int categoryId);
     }
 }

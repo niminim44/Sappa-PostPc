@@ -13,21 +13,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.aakira.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.github.aakira.expandablelayout.Utils;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.StorageReference;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.utils.LocationUtils;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -67,11 +67,16 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
     @BindView(R.id.expandableLayout)
     ExpandableLinearLayout expandableLayout;
 
-    @BindViews({R.id.electronics_checkbox, R.id.furniture_checkbox, R.id.books_checkbox, R.id.clothing_checkbox, R.id.sports_checkbox, R.id.children_checkbox, R.id.other_checkbox})
-    List<CheckBox> categoryCheckboxes;
+    @BindView(R.id.publish_button)
+    Button publishButton;
+
+    @BindView(R.id.category_radio_group)
+    RadioGroup categoryRadioGroup;
+
+    @BindView(R.id.category_title_text_view)
+    TextView categoryTitleTextView;
 
 
-    private String category = "general";
     private NewPostContract.Presenter presenter;
 
 
@@ -168,10 +173,29 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
         return "electronics"; // TODO: 28/07/2018 implement this
     }
 
+    @Override
+    public void disablePublishButton() {
+        publishButton.setEnabled(false);
+    }
+
+    @Override
+    public void initCategoryRadioGroup() {
+        categoryRadioGroup.clearCheck();
+        categoryRadioGroup.setOnCheckedChangeListener((group, categoryId) -> {
+            presenter.onCategorySelected(categoryId);
+        });
+    }
+
+    @Override
+    public void setCategoryTitle(String category) {
+        categoryTitleTextView.setText(category);
+    }
+
     @OnClick(R.id.publish_button)
     public void onPublishClicked(){
         presenter.onPublishClicked();
     }
+
 
     private void onClickButton(ExpandableLinearLayout expandableLayout) {
         expandableLayout.toggle();

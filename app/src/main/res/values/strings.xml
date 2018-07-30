@@ -40,5 +40,10 @@
     <string name="image_uploaded_successfully">Image uploaded to storage</string>
     <string name="post_published_successfully">Published successfully</string>
     <string name="failed_uploading_new_post" >Failed image upload to storage</string>
+    <string name="contact_info_enter_at_least_one">Contact info (enter at least one)</string>
+    <string name="email">Email</string>
+    <string name="item_location">Item location</string>
+    <string name="use_current_location"><u>USE CURRENT LOCATION</u>\u0009 or \u0009<u>ENTER AN ADDRESS</u></string>
+    <string name="phone_number">Phone number</string>
 
 </resources>

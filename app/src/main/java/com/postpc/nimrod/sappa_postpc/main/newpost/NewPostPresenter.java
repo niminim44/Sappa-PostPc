@@ -3,7 +3,7 @@ package com.postpc.nimrod.sappa_postpc.main.newpost;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
+import android.view.View;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
@@ -17,9 +17,19 @@ import com.postpc.nimrod.sappa_postpc.models.NewPostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
 import static android.app.Activity.RESULT_OK;
-import static android.content.Context.MODE_PRIVATE;
 
 class NewPostPresenter implements NewPostContract.Presenter{
+
+    private static final String DEFAULT_CATEGORY = "default category";
+    private static final String ELECTRONICS_CATEGORY = "Electronics";
+    private static final String FURNITURE_CATEGORY = "Furniture";
+    private static final String BOOKS_CATEGORY = "Books";
+    private static final String CLOTHING_CATEGORY = "Clothing";
+    private static final String SPORTS_CATEGORY = "Sports";
+    private static final String CHILDREN_CATEGORY = "Children";
+    private static final String OTHER_CATEGORY = "Other";
+
+
 
     private NewPostContract.View view;
     private Preferences prefs;
@@ -32,6 +42,7 @@ class NewPostPresenter implements NewPostContract.Presenter{
     private double longitude;
     private double latitude;
     private Uri imageUri;
+    private String selectedRadioButton;
 
     NewPostPresenter(NewPostContract.View view, Preferences prefs, LocationUtils locationUtils) {
         this.view = view;
@@ -41,8 +52,11 @@ class NewPostPresenter implements NewPostContract.Presenter{
 
     @Override
     public void init() {
+        selectedRadioButton = DEFAULT_CATEGORY;
         initFirebaseDatabase();
         view.initCategoryLayout(categoryExpandedState);
+        view.disablePublishButton();
+        view.initCategoryRadioGroup();
     }
 
     @Override
@@ -130,6 +144,40 @@ class NewPostPresenter implements NewPostContract.Presenter{
         }
     }
 
+    @Override
+    public void onCategorySelected(int categoryId) {
+        switch (categoryId){
+            case R.id.electronics_checkbox:
+                selectedRadioButton = ELECTRONICS_CATEGORY;
+                view.setCategoryTitle(ELECTRONICS_CATEGORY);
+                break;
+            case R.id.furniture_checkbox:
+                selectedRadioButton = FURNITURE_CATEGORY;
+                view.setCategoryTitle(FURNITURE_CATEGORY);
+                break;
+            case R.id.books_checkbox:
+                selectedRadioButton = BOOKS_CATEGORY;
+                view.setCategoryTitle(BOOKS_CATEGORY);
+                break;
+            case R.id.clothing_checkbox:
+                selectedRadioButton = CLOTHING_CATEGORY;
+                view.setCategoryTitle(CLOTHING_CATEGORY);
+                break;
+            case R.id.sports_checkbox:
+                selectedRadioButton = SPORTS_CATEGORY;
+                view.setCategoryTitle(SPORTS_CATEGORY);
+                break;
+            case R.id.children_checkbox:
+                selectedRadioButton = CHILDREN_CATEGORY;
+                view.setCategoryTitle(CHILDREN_CATEGORY);
+                break;
+            case R.id.other_checkbox:
+                selectedRadioButton = OTHER_CATEGORY;
+                view.setCategoryTitle(OTHER_CATEGORY);
+                break;
+
+        }
+    }
 
     private void initFirebaseDatabase() {
         mStorageRef = FirebaseStorage.getInstance().getReference(); // Initialize reference to Storage.
