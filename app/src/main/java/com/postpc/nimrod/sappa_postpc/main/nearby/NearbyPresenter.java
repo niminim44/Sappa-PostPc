@@ -9,6 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
 import com.postpc.nimrod.sappa_postpc.models.NewPostModel;
+import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 import com.postpc.nimrod.sappa_postpc.repo.Repo;
 
 import java.util.ArrayList;
@@ -19,18 +20,24 @@ class NearbyPresenter implements NearbyContract.Presenter{
 
     private NearbyContract.View view;
     private Repo repo;
+    private Preferences preferences;
+    private int range ;
+
 
     // Get a reference to our posts
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref = database.getReference();
 
-    NearbyPresenter(NearbyContract.View view, Repo repo) {
+    NearbyPresenter(NearbyContract.View view, Repo repo, Preferences preferences) {
         this.view = view;
         this.repo = repo;
+        this.preferences = preferences;
+        range = 10;   //TODO - range value we need to store in preferences and replace this line with "preferences.getRange()"
+
     }
 
     @Override
-    public void init() {
+    public void init(Location location) {
         view.showProgressBar();
 //        repo.getNearbyPostsRx()
 //                .observeOn(AndroidSchedulers.mainThread())
@@ -50,21 +57,21 @@ class NearbyPresenter implements NearbyContract.Presenter{
                 List<NearbyPostModel> nearbyPostModels = new ArrayList<>();
 
                 // Set default location (Givat Ram - Computer Science  building)
-                double myLatitude = 31.776700;
-                double myLongitude = 35.197507;
+                double myLatitude = location.getLatitude();
+                double myLongitude = location.getLongitude();
                 float [] dist = new float[1];   // Distance calculation container.
-
-                // Set range.
-                //TODO - get range parameter from shared preferences.
-                float range = 10;
 
                 // Get data snapshot of all posts.
                 DataSnapshot postsSnapShot = dataSnapshot.child("posts");
 
+                // Variables for filtering.
+                boolean categoryFits;
+                boolean titleFits;
+                boolean descriptionFits;
+
                 // Iterate over the data snapshot, reproduce NewPostModel for each post
                 // and filter it according to distance/category/search parameters.
                 //TODO - add category to NewPostModel to filter over it later.
-                //TODO - filtering in "My Posts" should be done over UserID from shared preferences.
                 Iterable<DataSnapshot> posts = postsSnapShot.getChildren();
                 for (DataSnapshot curPost : posts) {
                     NewPostModel post = curPost.getValue(NewPostModel.class);
@@ -73,15 +80,30 @@ class NearbyPresenter implements NearbyContract.Presenter{
                     Location.distanceBetween(myLatitude, myLongitude, post.getLatitude(), post.getLongitude(), dist);
 
                     // Filter and convert to NearbyPostModel.
-//                    if ((dist[0] * 0.001) < range) {
-                        nearbyPostModels.add(new NearbyPostModel(
-                                post.getImageUrl(),
-                                post.getTitle(),
-                                post.getDescription(),
-                                "",
-                                Math.round(dist[0] * 0.001) + " km away",
-                                post.getCategory()));
-//                    }
+                    if ((dist[0] * 0.001) < range) {
+
+                        //TODO - values we need to store in preferences:
+                        String categoryFilter = "other";
+                        String titleFilter = "tv";
+                        String descriptionFilter = "other";
+
+                        // Check if current post fits the filtering parameters.
+                        categoryFits = categoryFilter.toLowerCase().contains(post.getCategory().toLowerCase());
+                        titleFits = titleFilter.toLowerCase().contains(post.getTitle().toLowerCase());
+                        descriptionFits = descriptionFilter.toLowerCase().contains(post.getDescription().toLowerCase());
+
+                        // Filter current post according to category and search field.
+                        // *contains() returns true on empty search
+                        if ( categoryFits && ( titleFits || descriptionFits ) ) {
+                                nearbyPostModels.add(new NearbyPostModel(
+                                        post.getImageUrl(),
+                                        post.getTitle(),
+                                        post.getDescription(),
+                                        "",
+                                        Math.round(dist[0] * 0.001) + " km away",
+                                        post.getCategory()));
+                        }
+                    }
                 }
 
                 // Finish data retrieval as in loadPostsToRecyclerView() method.

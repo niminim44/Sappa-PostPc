@@ -50,7 +50,6 @@ public class LocationUtils {
             mFusedLocationClient.getLastLocation()
                     .addOnSuccessListener(activity, location -> {
                         // Got last known location. In some rare situations this can be null.
-
                         if (location != null) {
                             // Logic to handle location object
                             onLocationReceivedCallback.onLocationReceived(location);
