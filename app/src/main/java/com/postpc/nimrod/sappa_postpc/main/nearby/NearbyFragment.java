@@ -38,14 +38,15 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class NearbyFragment extends Fragment implements NearbyContract.View{
 
+    private static final String TAG = "NearbyFragment";
+
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 
-    // Initialize location provider and get user current location.
-    private LocationUtils locationUtils;
+
     private NearbyContract.Presenter presenter;
     private NearbyRecyclerViewAdapter adapter;
 
@@ -60,48 +61,12 @@ public class NearbyFragment extends Fragment implements NearbyContract.View{
         View v =  inflater.inflate(R.layout.fragment_nearby, container, false);
         ButterKnife.bind(this, v);
 
-        //TODO - Data supplier currently irrelevant, data retrieval is done asynchronously in NearbyPresenter by Firebase.
-        presenter = new NearbyPresenter(this, new FakeDataSupplier(), new Preferences(requireContext().getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)));
-
-        // Initialize location provider and get user current location.
-        locationUtils = new LocationUtils(requireContext(), requireActivity());
-
-        LocationManager lm = (LocationManager) requireContext().getSystemService(LOCATION_SERVICE);
-        boolean gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        ConnectivityManager cm = (ConnectivityManager)requireContext().getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-
-        String text = "";
-        if (!gpsEnabled || !isConnected) {
-            text = text + "Please enable";
-            if (!gpsEnabled) {
-                text = text + "\n - GPS";
-            }
-            if (!isConnected) {
-                text = text + "\n - Wi-Fi or Cellular Data";
-            }
-            text = text + "\nand restart the application.";
-        } else {
-            text = text + "Loading posts...please wait:)";
-        }
-
-//        CharSequence text = "lat: " + location.getLatitude() + " | lon: " + location.getLongitude();
-        int duration = Toast.LENGTH_LONG;
-        Toast toast = Toast.makeText(requireContext(), text, duration);
-        toast.show();
-
-        locationUtils.getDeviceLocation(location -> {
-
-            CharSequence text2 = "My position\nlat: " + location.getLatitude() + " | lon: " + location.getLongitude();
-            int duration2 = Toast.LENGTH_LONG;
-            Toast toast2 = Toast.makeText(requireContext(), text2, duration2);
-            toast2.show();
-
-            presenter.init(location);
-        });
-
+        presenter = new NearbyPresenter(this, new FakeDataSupplier(),
+                new Preferences(requireContext().getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)),
+                new LocationUtils(requireContext(), requireActivity()),
+                (LocationManager) requireContext().getSystemService(LOCATION_SERVICE),
+                (ConnectivityManager)requireContext().getSystemService(CONNECTIVITY_SERVICE));
+        presenter.init();
         return v;
     }
 
@@ -121,5 +86,10 @@ public class NearbyFragment extends Fragment implements NearbyContract.View{
     @Override
     public void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showToastMessage(String text) {
+        Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
     }
 }

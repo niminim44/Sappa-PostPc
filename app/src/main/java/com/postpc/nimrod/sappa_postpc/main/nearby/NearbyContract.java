@@ -15,11 +15,13 @@ public interface NearbyContract {
         void showProgressBar();
 
         void hideProgressBar();
+
+        void showToastMessage(String text);
     }
 
     interface Presenter{
 
-        void init(Location location);
+        void init();
     }
 
 }

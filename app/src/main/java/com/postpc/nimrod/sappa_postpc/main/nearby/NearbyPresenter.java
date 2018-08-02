@@ -1,13 +1,18 @@
 package com.postpc.nimrod.sappa_postpc.main.nearby;
 
 import android.location.Location;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.postpc.nimrod.sappa_postpc.main.utils.LocationUtils;
 import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
 import com.postpc.nimrod.sappa_postpc.models.NewPostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
@@ -15,6 +20,12 @@ import com.postpc.nimrod.sappa_postpc.repo.Repo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 class NearbyPresenter implements NearbyContract.Presenter{
 
@@ -22,44 +33,76 @@ class NearbyPresenter implements NearbyContract.Presenter{
     private NearbyContract.View view;
     private Repo repo;
     private Preferences preferences;
+    private LocationUtils locationUtils;
+    private LocationManager locationManager;
+    private ConnectivityManager connectivityManager;
     private int range ;
 
 
     // Get a reference to our posts
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref = database.getReference();
+    private ArrayList<NearbyPostModel> nearbyPostModels = new ArrayList<>();
+    private Location currentLocation;
 
-    NearbyPresenter(NearbyContract.View view, Repo repo, Preferences preferences) {
+    NearbyPresenter(NearbyContract.View view, Repo repo, Preferences preferences, LocationUtils locationUtils,
+                    LocationManager locationManager, ConnectivityManager connectivityManager) {
         this.view = view;
         this.repo = repo;
         this.preferences = preferences;
+        this.locationUtils = locationUtils;
+        this.locationManager = locationManager;
+        this.connectivityManager = connectivityManager;
         range = 10;   //TODO - range value we need to store in preferences and replace this line with "preferences.getRange()"
 
     }
 
     @Override
-    public void init(Location location) {
+    public void init() {
         view.showProgressBar();
-//        repo.getNearbyPostsRx()
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnNext(this::loadPostsToRecyclerView)
-//                .subscribe();
+        checkForInternetAndGpsConnectivity();
+    }
 
-        // Retrieve data from Firebase Realtime DB (done asynchronously by Firebase).
-        // Attach single time listener to read the data from our posts reference.
-        // Basically this init() method starts the data retrieval and continues
-        // after we get and filter the result (hides the loading wheel and initializes
-        // the recycler view).
+    private void checkForInternetAndGpsConnectivity() {
+        boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        String text = "";
+        if (!gpsEnabled || !isConnected) {
+            askUserToTurnOnInternetOrGps(gpsEnabled, isConnected, text);
+            retryInFiveSeconds();
+        } else {
+            getLocationAndContinue();
+        }
+    }
+
+    private void askUserToTurnOnInternetOrGps(boolean gpsEnabled, boolean isConnected, String text) {
+        text = text + "Please enable";
+        if (!gpsEnabled) {
+            text = text + "\n - GPS";
+        }
+        if (!isConnected) {
+            text = text + "\n - Wi-Fi or Cellular Data";
+        }
+        text = text + "\nand restart the application.";
+        view.showToastMessage(text);
+    }
+
+    private void getLocationAndContinue() {
+        locationUtils.getDeviceLocation(location -> {
+            currentLocation = location;
+            getPostsFromServer();
+        });
+    }
+
+    private void getPostsFromServer() {
         ref.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                // Filtered posts array.
-                List<NearbyPostModel> nearbyPostModels = new ArrayList<>();
-
                 // Set default location (Givat Ram - Computer Science  building)
-                double myLatitude = location.getLatitude();
-                double myLongitude = location.getLongitude();
+                double myLatitude = currentLocation.getLatitude();
+                double myLongitude = currentLocation.getLongitude();
                 float [] dist = new float[1];   // Distance calculation container.
 
                 // Get data snapshot of all posts.
@@ -96,18 +139,17 @@ class NearbyPresenter implements NearbyContract.Presenter{
                         // Filter current post according to category and search field.
                         // *contains() returns true on empty search
                         if ( categoryFits && ( titleFits || descriptionFits ) ) {
-                                nearbyPostModels.add(new NearbyPostModel(
-                                        post.getImageUrl(),
-                                        post.getTitle(),
-                                        post.getDescription(),
-                                        "",
-                                        Math.round(dist[0] * 0.001) + " km away",
-                                        post.getCategory()));
+                            nearbyPostModels.add(new NearbyPostModel(
+                                    post.getImageUrl(),
+                                    post.getTitle(),
+                                    post.getDescription(),
+                                    "",
+                                    Math.round(dist[0] * 0.001) + " km away",
+                                    post.getCategory()));
                         }
                     }
                 }
 
-                // Finish data retrieval as in loadPostsToRecyclerView() method.
                 view.hideProgressBar();
                 view.initRecyclerView(nearbyPostModels);
             }
@@ -117,8 +159,12 @@ class NearbyPresenter implements NearbyContract.Presenter{
                 Log.e("The read failed: ",  databaseError.toString());
             }
         });
-
     }
 
-
+    private void retryInFiveSeconds() {
+        Observable.timer(5000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(aLong -> init()).subscribe();
+    }
 }
