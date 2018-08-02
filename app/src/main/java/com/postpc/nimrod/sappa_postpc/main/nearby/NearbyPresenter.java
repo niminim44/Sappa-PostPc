@@ -11,10 +11,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.postpc.nimrod.sappa_postpc.main.events.RefreshDataEvent;
 import com.postpc.nimrod.sappa_postpc.main.utils.LocationUtils;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 import com.postpc.nimrod.sappa_postpc.repo.Repo;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +37,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
     private LocationManager locationManager;
     private ConnectivityManager connectivityManager;
     private int range ;
+    private EventBus eventBus;
 
 
     // Get a reference to our posts
@@ -42,7 +47,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
     private Location currentLocation;
 
     NearbyPresenter(NearbyContract.View view, Repo repo, Preferences preferences, LocationUtils locationUtils,
-                    LocationManager locationManager, ConnectivityManager connectivityManager) {
+                    LocationManager locationManager, ConnectivityManager connectivityManager, EventBus eventBus) {
         this.view = view;
         this.repo = repo;
         this.preferences = preferences;
@@ -50,12 +55,20 @@ class NearbyPresenter implements NearbyContract.Presenter{
         this.locationManager = locationManager;
         this.connectivityManager = connectivityManager;
         range = preferences.getCurrentRangeFilter();
+        this.eventBus = eventBus;
     }
 
     @Override
     public void init() {
+        nearbyPostModels = new ArrayList<>();
+        subscribeEventBus();
         view.showProgressBar();
         checkForInternetAndGpsConnectivity();
+    }
+
+    @Override
+    public void onDestroy() {
+        unsubscribeEventBus();
     }
 
     private void checkForInternetAndGpsConnectivity() {
@@ -123,8 +136,8 @@ class NearbyPresenter implements NearbyContract.Presenter{
 
                         //TODO - values we need to store in preferences:
                         String categoryFilter = preferences.getCurrentCategoryFilter();
-                        String titleFilter = "tv";
-                        String descriptionFilter = "other";
+                        String titleFilter = "";
+                        String descriptionFilter = "";
 
                         // Check if current post fits the filtering parameters.
                         categoryFits = categoryFilter.toLowerCase().contains(post.getCategory().toLowerCase());
@@ -133,17 +146,19 @@ class NearbyPresenter implements NearbyContract.Presenter{
 
                         // Filter current post according to category and search field.
                         // *contains() returns true on empty search
-                        if ( categoryFits && ( titleFits || descriptionFits ) ) {
+//                        if ( categoryFits && ( titleFits || descriptionFits ) ) {
                             post.setDistance(Math.round(dist[0] * 0.001) + " km away");
                             nearbyPostModels.add(post);
-                        }
+//                        }
                     }
                 }
                 view.hideProgressBar();
                 if(nearbyPostModels.isEmpty()){
                     view.showNoPostsAvailableTextView();
+                    view.initRecyclerView(new ArrayList<>());
                 }
                 else{
+                    view.hideNoPostsAvailableTextView();
                     view.initRecyclerView(nearbyPostModels);
                 }
             }
@@ -160,5 +175,22 @@ class NearbyPresenter implements NearbyContract.Presenter{
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(aLong -> init()).subscribe();
+    }
+
+    private void subscribeEventBus() {
+        if(!eventBus.isRegistered(this)){
+            eventBus.register(this);
+        }
+    }
+
+    private void unsubscribeEventBus(){
+        if(eventBus.isRegistered(this)){
+            eventBus.unregister(this);
+        }
+    }
+
+    @Subscribe
+    public void onRefreshDataEvent(RefreshDataEvent event){
+        init();
     }
 }

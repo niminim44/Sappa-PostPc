@@ -1,12 +1,12 @@
 package com.postpc.nimrod.sappa_postpc.main;
 
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
@@ -17,8 +17,7 @@ import com.postpc.nimrod.sappa_postpc.main.mypost.MyPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.newpost.NewPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
-import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
-import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
 import org.greenrobot.eventbus.EventBus;
@@ -142,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void openNearbyPostFragment(NearbyPostModel nearbyPostModel) {
+    public void openNearbyPostFragment(PostModel nearbyPostModel) {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.container, NearbyPostFragment.newInstance(nearbyPostModel))
                 .addToBackStack("nearby_post_fragment")
@@ -151,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void openMyPostFragment(MyPostModel myPostModel) {
+    public void openMyPostFragment(PostModel myPostModel) {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.container, MyPostFragment.newInstance(myPostModel))
                 .addToBackStack("my_post_fragment")

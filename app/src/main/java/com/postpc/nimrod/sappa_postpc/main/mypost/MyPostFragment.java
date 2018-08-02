@@ -8,7 +8,9 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -16,6 +18,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Objects;
 
@@ -51,6 +55,13 @@ public class MyPostFragment extends Fragment implements MyPostContract.View{
 
     @BindView(R.id.category_text_view)
     TextView categoryTextView;
+
+    @BindView(R.id.delete_progress_bar)
+    ProgressBar deleteProgressBar;
+
+    @BindView(R.id.delete_post_button)
+    Button deleteButton;
+
     private MyPostContract.Presenter presenter;
 
 
@@ -77,7 +88,7 @@ public class MyPostFragment extends Fragment implements MyPostContract.View{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_my_post, container, false);
         ButterKnife.bind(this, view);
-        presenter = new MyPostPresenter(this, new UiUtils());
+        presenter = new MyPostPresenter(this, new UiUtils(), EventBus.getDefault());
         presenter.init();
         return view;
     }
@@ -121,6 +132,12 @@ public class MyPostFragment extends Fragment implements MyPostContract.View{
     @Override
     public void callOnBackPressed() {
         Objects.requireNonNull(getActivity()).onBackPressed();
+    }
+
+    @Override
+    public void showDeleteProgressBar() {
+        deleteProgressBar.setVisibility(View.VISIBLE);
+        deleteButton.setVisibility(View.INVISIBLE);
     }
 
     @OnClick(R.id.back_button)

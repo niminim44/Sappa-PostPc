@@ -5,9 +5,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.postpc.nimrod.sappa_postpc.main.events.RefreshDataEvent;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 import com.postpc.nimrod.sappa_postpc.repo.Repo;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,21 +23,24 @@ class MyPostsPresenter implements MyPostsContract.Presenter{
     private Preferences preferences;
     private final MyPostsContract.View view;
     private String myUserId ;
+    private EventBus eventBus;
 
     // Get a reference to our posts.
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref = database.getReference();
 
 
-    MyPostsPresenter(MyPostsContract.View view, Repo repo, Preferences preferences) {
+    MyPostsPresenter(MyPostsContract.View view, Repo repo, Preferences preferences, EventBus eventBus) {
         this.view = view;
         this.repo = repo;
         this.preferences = preferences;
         myUserId = preferences.getUserId();
+        this.eventBus = eventBus;
     }
 
     @Override
     public void init() {
+        subscribeEventBus();
         view.showProgressBar();
         ref.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -55,8 +62,10 @@ class MyPostsPresenter implements MyPostsContract.Presenter{
                 view.hideProgressBar();
                 if(myPostModels.isEmpty()){
                     view.showNoOwnPostsTextView();
+                    view.initRecyclerView(new ArrayList<>());
                 }
                 else{
+                    view.hideNoOwnPostsTextView();
                     view.initRecyclerView(myPostModels);
                 }
             }
@@ -69,6 +78,28 @@ class MyPostsPresenter implements MyPostsContract.Presenter{
             }
         });
 
+    }
+
+    @Override
+    public void onDestroy() {
+        unsubscribeEventBus();
+    }
+
+    private void subscribeEventBus() {
+        if(!eventBus.isRegistered(this)){
+            eventBus.register(this);
+        }
+    }
+
+    private void unsubscribeEventBus(){
+        if(eventBus.isRegistered(this)){
+            eventBus.unregister(this);
+        }
+    }
+
+    @Subscribe
+    public void onRefreshdataEvent(RefreshDataEvent event){
+        init();
     }
 
 }

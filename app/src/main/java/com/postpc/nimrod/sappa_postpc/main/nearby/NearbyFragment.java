@@ -19,7 +19,8 @@ import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.utils.LocationUtils;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
-import com.postpc.nimrod.sappa_postpc.repo.fake.FakeDataSupplier;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -61,11 +62,12 @@ public class NearbyFragment extends Fragment implements NearbyContract.View{
         View v =  inflater.inflate(R.layout.fragment_nearby, container, false);
         ButterKnife.bind(this, v);
 
-        presenter = new NearbyPresenter(this, new FakeDataSupplier(),
+        presenter = new NearbyPresenter(this, null,
                 new Preferences(requireContext().getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)),
                 new LocationUtils(requireContext(), requireActivity()),
                 (LocationManager) requireContext().getSystemService(LOCATION_SERVICE),
-                (ConnectivityManager)requireContext().getSystemService(CONNECTIVITY_SERVICE));
+                (ConnectivityManager)requireContext().getSystemService(CONNECTIVITY_SERVICE),
+                EventBus.getDefault());
         presenter.init();
         return v;
     }
@@ -96,5 +98,16 @@ public class NearbyFragment extends Fragment implements NearbyContract.View{
     @Override
     public void showNoPostsAvailableTextView() {
         noAvailablePostsTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideNoPostsAvailableTextView() {
+        noAvailablePostsTextView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 }

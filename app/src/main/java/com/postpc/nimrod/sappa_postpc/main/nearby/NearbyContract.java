@@ -18,11 +18,15 @@ public interface NearbyContract {
         void showToastMessage(String text);
 
         void showNoPostsAvailableTextView();
+
+        void hideNoPostsAvailableTextView();
     }
 
     interface Presenter{
 
         void init();
+
+        void onDestroy();
     }
 
 }

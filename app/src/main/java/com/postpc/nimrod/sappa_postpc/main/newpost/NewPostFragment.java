@@ -4,12 +4,13 @@ package com.postpc.nimrod.sappa_postpc.main.newpost;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,12 +26,18 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.aakira.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.github.aakira.expandablelayout.Utils;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.utils.LocationProvider;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,6 +92,12 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
     @BindView(R.id.description_length_text_view)
     TextView descriptionLengthTextView;
 
+    @BindView(R.id.upload_image_text_view)
+    TextView uploadImageButton;
+
+    @BindView(R.id.publish_progress_bar)
+    ProgressBar publishProgressBar;
+
 
 
     private NewPostContract.Presenter presenter;
@@ -102,7 +115,8 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
         ButterKnife.bind(this, v);
         presenter = new NewPostPresenter(this,
                 new Preferences(requireContext().getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)),
-                new LocationProvider(requireContext()));
+                new LocationProvider(requireContext()),
+                EventBus.getDefault());
         presenter.init();
         return v;
     }
@@ -116,7 +130,7 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
 
     @Override
     public void openCamera() {
-        Intent takePicture  = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent takePicture  = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(takePicture , 1);
     }
 
@@ -155,7 +169,12 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
 
     @Override
     public void setImageUri(Uri imageUri) {
-        imageView.setImageURI(imageUri);
+        Glide.with(imageView.getContext())
+                .load(imageUri)
+                .apply(new RequestOptions().centerCrop())
+                .into(imageView);
+        imageView.setVisibility(View.VISIBLE);
+        uploadImageButton.setVisibility(View.GONE);
     }
 
     @Override
@@ -318,6 +337,27 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
         return emailEditText.getText().toString();
     }
 
+    @Override
+    public void setImageBitmap(Bitmap thumbnail) {
+        Glide.with(imageView.getContext())
+                .load(thumbnail)
+                .apply(new RequestOptions().centerCrop())
+                .into(imageView);
+        imageView.setVisibility(View.VISIBLE);
+        uploadImageButton.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showPublishProgressBar() {
+        publishButton.setVisibility(View.INVISIBLE);
+        publishProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void callOnBackPressed() {
+        Objects.requireNonNull(getActivity()).onBackPressed();
+    }
+
     @OnClick(R.id.publish_button)
     public void onPublishClicked(){
         presenter.onPublishClicked();
@@ -331,6 +371,31 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
     @OnClick(R.id.description_card_view)
     public void onDescriptionClicked(){
         focusDescriptionAndOpenKeyboard();
+    }
+
+    @OnClick(R.id.upload_image_text_view)
+    public void onUploadImageClicked(){
+        showPictureDialog();
+    }
+
+    private void showPictureDialog(){
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
+        pictureDialog.setTitle("Select Action");
+        String[] pictureDialogItems = {
+                "Select photo from gallery",
+                "Capture photo from camera" };
+        pictureDialog.setItems(pictureDialogItems,
+                (dialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            openGallery();
+                            break;
+                        case 1:
+                            openCamera();
+                            break;
+                    }
+                });
+        pictureDialog.show();
     }
 
     private void focusDescriptionAndOpenKeyboard() {

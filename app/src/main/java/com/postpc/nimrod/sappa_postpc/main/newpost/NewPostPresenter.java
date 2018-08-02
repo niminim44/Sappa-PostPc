@@ -12,9 +12,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.main.events.RefreshDataEvent;
 import com.postpc.nimrod.sappa_postpc.main.utils.LocationProvider;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
+
+import org.greenrobot.eventbus.EventBus;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -35,11 +38,11 @@ class NewPostPresenter implements NewPostContract.Presenter{
     private static final String OTHER_CATEGORY = "Other";
     private static final Boolean IGNORED_VALUE = true;
     private static final int DESCRIPTION_MAX_LENGTH = 140;
+    static final String IMAGE_DIRECTORY = "/sappa_images/";
     private final LocationProvider locationProvider;
+    private EventBus eventBus;
 
     private PublishSubject<Boolean> fieldChangedPublishSubject = PublishSubject.create();
-
-
 
     private NewPostContract.View view;
     private Preferences prefs;
@@ -55,10 +58,12 @@ class NewPostPresenter implements NewPostContract.Presenter{
     private boolean validPhone = false;
     private Location currentLocation;
 
-    NewPostPresenter(NewPostContract.View view, Preferences prefs, LocationProvider locationProvider) {
+    NewPostPresenter(NewPostContract.View view, Preferences prefs, LocationProvider locationProvider,
+                     EventBus eventBus) {
         this.view = view;
         this.prefs = prefs;
         this.locationProvider = locationProvider;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -97,6 +102,7 @@ class NewPostPresenter implements NewPostContract.Presenter{
     public void onPublishClicked() {
         // Get additional info for post.
         String userId = prefs.getUserId();
+        view.showPublishProgressBar();
 
         // Use push() to create a post unique key in the node containing posts.
         String key = myRef.push().getKey();
@@ -106,7 +112,11 @@ class NewPostPresenter implements NewPostContract.Presenter{
         UploadTask uploadTask = ref.putFile(imageUri);
 
         uploadTask.continueWithTask(task -> getDownloadUrl(ref, task))
-                .addOnCompleteListener(task -> saveNewPost(userId, key, task));
+                .addOnCompleteListener(task -> {
+                    saveNewPost(userId, key, task);
+                    eventBus.post(new RefreshDataEvent());
+                    view.callOnBackPressed();
+                });
     }
 
     private void saveNewPost(String userId, String key, Task<Uri> task) {
@@ -181,14 +191,14 @@ class NewPostPresenter implements NewPostContract.Presenter{
                     Uri selectedImage = imageReturnedIntent.getData();
                     imageUri = selectedImage;
                     view.setImageUri(selectedImage);
+                    fieldChangedPublishSubject.onNext(IGNORED_VALUE);
                 }
-
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    imageUri = selectedImage;
-                    view.setImageUri(selectedImage);
+                    imageUri = imageReturnedIntent.getData();
+                    view.setImageUri(imageUri);
+                    fieldChangedPublishSubject.onNext(IGNORED_VALUE);
                 }
                 break;
         }
@@ -243,7 +253,8 @@ class NewPostPresenter implements NewPostContract.Presenter{
                 (!emptyDescription) &&
                 (validEmail || validPhone) &&
                 (!selectedRadioButton.equals(DEFAULT_CATEGORY)) &&
-                (currentLocation != null);
+                (currentLocation != null) &&
+                (imageUri != null);
     }
 
     @Override

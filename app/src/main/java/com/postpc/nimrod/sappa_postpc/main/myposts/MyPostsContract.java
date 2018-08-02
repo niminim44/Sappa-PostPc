@@ -15,10 +15,14 @@ public interface MyPostsContract {
         void initRecyclerView(List<PostModel> myPostModels);
 
         void showNoOwnPostsTextView();
+
+        void hideNoOwnPostsTextView();
     }
 
     interface Presenter{
 
         void init();
+
+        void onDestroy();
     }
 }

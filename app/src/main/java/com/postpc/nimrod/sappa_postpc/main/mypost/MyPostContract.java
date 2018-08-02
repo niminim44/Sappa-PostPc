@@ -19,6 +19,8 @@ public interface MyPostContract {
         void setCategory(String category);
 
         void callOnBackPressed();
+
+        void showDeleteProgressBar();
     }
 
     interface Presenter{

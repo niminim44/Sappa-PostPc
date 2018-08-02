@@ -16,6 +16,9 @@ public class PostModel {
 
     private String distance;
 
+    public PostModel() {
+    }
+
     public PostModel(String postId, String imageUrl, String title, String description, double latitude, double longitude, String userID, String userName, String phone, String category, String email) {
         this.postId = postId;
         this.imageUrl = imageUrl;

@@ -6,8 +6,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.postpc.nimrod.sappa_postpc.main.events.RefreshDataEvent;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class MyPostPresenter implements MyPostContract.Presenter{
 
@@ -22,20 +25,23 @@ public class MyPostPresenter implements MyPostContract.Presenter{
     static final String USER_NAME = "user name";
     static final String PHONE = "phone";
     static final String EMAIL= "email";
+    private final EventBus eventBus;
 
     private MyPostContract.View view;
     private UiUtils uiUtils;
+    private PostModel nearbyPostModel;
 
-    MyPostPresenter(MyPostContract.View view, UiUtils uiUtils) {
+    MyPostPresenter(MyPostContract.View view, UiUtils uiUtils, EventBus eventBus) {
         this.view = view;
         this.uiUtils = uiUtils;
+        this.eventBus = eventBus;
     }
 
 
     @Override
     public void init() {
         Bundle args = view.getPostArguments();
-        PostModel nearbyPostModel = toMyPostModel(args);
+        nearbyPostModel = toMyPostModel(args);
         String imageUrl = nearbyPostModel.getImageUrl();
         if(imageUrl != null){
             view.setImage(
@@ -59,17 +65,20 @@ public class MyPostPresenter implements MyPostContract.Presenter{
 
     @Override
     public void onDeleteClicked() {
-
+        view.showDeleteProgressBar();
         // Delete file.
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl(IMAGE_URL);
+        StorageReference storageRef = storage.getReferenceFromUrl(nearbyPostModel.getImageUrl());
         storageRef.delete().addOnSuccessListener(aVoid ->  {
             // File deleted successfully
 
             // Get a reference to our posts.
-            DatabaseReference dbReference = FirebaseDatabase.getInstance().getReference("posts");
-            dbReference.child("key").removeValue();  //TODO - we need the post key + show toast + refresh myPosts fragment
-
+            DatabaseReference dbReference = FirebaseDatabase.getInstance()
+                    .getReference("posts");
+            dbReference.child(nearbyPostModel.getPostId())
+                    .removeValue();
+            eventBus.post(new RefreshDataEvent());
+            view.callOnBackPressed();
         }).addOnFailureListener(exception -> {
             // Uh-oh, an error occurred!
 

@@ -15,7 +15,8 @@ import android.widget.TextView;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
-import com.postpc.nimrod.sappa_postpc.repo.fake.FakeDataSupplier;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -51,7 +52,9 @@ public class MyPostsFragment extends Fragment implements MyPostsContract.View{
                              Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.fragment_my_posts, container, false);
         ButterKnife.bind(this, v);
-        presenter = new MyPostsPresenter(this, new FakeDataSupplier(), new Preferences(requireContext().getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)));
+        presenter = new MyPostsPresenter(this, null,
+                new Preferences(requireContext().getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)),
+                EventBus.getDefault());
         presenter.init();
         return v;
     }
@@ -77,5 +80,16 @@ public class MyPostsFragment extends Fragment implements MyPostsContract.View{
     @Override
     public void showNoOwnPostsTextView() {
         noOwnPostsTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideNoOwnPostsTextView() {
+        noOwnPostsTextView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 }

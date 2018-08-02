@@ -1,6 +1,8 @@
 package com.postpc.nimrod.sappa_postpc.main.newpost;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 
 public interface NewPostContract {
@@ -54,6 +56,14 @@ public interface NewPostContract {
         void setDescriptionLengthColor(int colorResourceId);
 
         String getEmail();
+
+        Context getContext();
+
+        void setImageBitmap(Bitmap thumbnail);
+
+        void showPublishProgressBar();
+
+        void callOnBackPressed();
     }
 
     interface Presenter{

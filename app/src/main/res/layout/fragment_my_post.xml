@@ -142,6 +142,16 @@
                 android:fontFamily="@font/roboto_medium"
                 android:textColor="@color/white"
                 android:textSize="16sp"/>
+
+            <ProgressBar
+                android:id="@+id/delete_progress_bar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/edit_post_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
         </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>
