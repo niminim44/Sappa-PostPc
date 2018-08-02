@@ -1,6 +1,7 @@
 package com.postpc.nimrod.sappa_postpc.main.nearby;
 
 import android.location.Location;
+import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -113,18 +114,11 @@ class NearbyPresenter implements NearbyContract.Presenter{
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
-                // TODO - show informational toast like "Something went wrong with connection :( /n please try again later"
-                System.out.println("The read failed: " + databaseError.getCode());
+                Log.e("The read failed: ",  databaseError.toString());
             }
         });
 
     }
 
-
-//    private void loadPostsToRecyclerView(List<NearbyPostModel> nearbyPostModels) {
-//        view.hideProgressBar();
-//        view.initRecyclerView(nearbyPostModels);
-//    }
 
 }
