@@ -1,7 +1,6 @@
 package com.postpc.nimrod.sappa_postpc.main.myposts;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -11,10 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.postpc.nimrod.sappa_postpc.R;
-import com.postpc.nimrod.sappa_postpc.main.nearby.NearbyRecyclerViewAdapter;
-import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 import com.postpc.nimrod.sappa_postpc.repo.fake.FakeDataSupplier;
 
@@ -35,6 +34,9 @@ public class MyPostsFragment extends Fragment implements MyPostsContract.View{
 
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+
+    @BindView(R.id.no_own_posts_text_view)
+    TextView noOwnPostsTextView;
 
 
     private MyPostsContract.Presenter presenter;
@@ -65,10 +67,15 @@ public class MyPostsFragment extends Fragment implements MyPostsContract.View{
     }
 
     @Override
-    public void initRecyclerView(List<MyPostModel> myPostModels) {
+    public void initRecyclerView(List<PostModel> myPostModels) {
         adapter = new MyPostsRecyclerViewAdapter(myPostModels);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showNoOwnPostsTextView() {
+        noOwnPostsTextView.setVisibility(View.VISIBLE);
     }
 }

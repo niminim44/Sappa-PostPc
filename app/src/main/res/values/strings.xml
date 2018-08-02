@@ -48,5 +48,6 @@
     <string name="or">or</string>
     <string name="enter_address"><u>ENTER AN ADDRESS</u></string>
     <string name="there_are_not_available_posts_right_now">There are no available posts right now…</string>
+    <string name="you_have_no_posts_of_your_own_yet">You have no posts of your own yet…</string>
 
 </resources>

@@ -8,16 +8,14 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.postpc.nimrod.sappa_postpc.R;
-import com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
-import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 
 import java.util.Objects;
 
@@ -27,10 +25,15 @@ import butterknife.OnClick;
 
 import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.CATEGORY;
 import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.DESCRIPTION;
-import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.DISTANCE;
+import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.EMAIL;
 import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.IMAGE_URL;
-import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.LOCATION;
+import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.LATITUDE;
+import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.LONGITUDE;
+import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.PHONE;
+import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.POST_ID;
 import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.TITLE;
+import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.USER_ID;
+import static com.postpc.nimrod.sappa_postpc.main.mypost.MyPostPresenter.USER_NAME;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,13 +54,20 @@ public class MyPostFragment extends Fragment implements MyPostContract.View{
     private MyPostContract.Presenter presenter;
 
 
-    public static MyPostFragment newInstance(MyPostModel myPostModel){
+    public static MyPostFragment newInstance(PostModel myPostModel){
         MyPostFragment myFragment = new MyPostFragment();
         Bundle args = new Bundle();
         args.putString(TITLE, myPostModel.getTitle());
         args.putString(DESCRIPTION, myPostModel.getDescription());
         args.putString(IMAGE_URL, myPostModel.getImageUrl());
         args.putString(CATEGORY, myPostModel.getCategory());
+        args.putString(USER_ID, myPostModel.getUserID());
+        args.putString(USER_NAME, myPostModel.getUserName());
+        args.putDouble(LATITUDE, myPostModel.getLatitude());
+        args.putDouble(LONGITUDE, myPostModel.getLongitude());
+        args.putString(PHONE, myPostModel.getPhone());
+        args.putString(EMAIL, myPostModel.getEmail());
+        args.putString(POST_ID, myPostModel.getPostId());
         myFragment.setArguments(args);
         return myFragment;
     }

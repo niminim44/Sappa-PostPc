@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.events.NearbyPostClickedEvent;
-import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -42,7 +42,7 @@ public class NearbyItemViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void setData(NearbyPostModel nearbyPostModel) {
+    public void setData(PostModel nearbyPostModel) {
         titleTextView.setText(nearbyPostModel.getTitle());
         distanceTextView.setText(nearbyPostModel.getDistance());
         descriptionTextView.setText(nearbyPostModel.getDescription());
@@ -54,7 +54,7 @@ public class NearbyItemViewHolder extends RecyclerView.ViewHolder {
         rippleView.setOnClickListener(getPostClickedListener(nearbyPostModel));
     }
 
-    private View.OnClickListener getPostClickedListener(NearbyPostModel nearbyPostModel) {
+    private View.OnClickListener getPostClickedListener(PostModel nearbyPostModel) {
         return view -> EventBus.getDefault().post(new NearbyPostClickedEvent(nearbyPostModel));
     }
 }

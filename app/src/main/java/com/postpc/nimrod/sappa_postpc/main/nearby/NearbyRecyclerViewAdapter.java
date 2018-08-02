@@ -7,16 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.postpc.nimrod.sappa_postpc.R;
-import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class NearbyRecyclerViewAdapter extends RecyclerView.Adapter<NearbyItemViewHolder>{
 
-    private List<NearbyPostModel> items;
+    private List<PostModel> items;
 
-    public NearbyRecyclerViewAdapter(List<NearbyPostModel> items) {
+    public NearbyRecyclerViewAdapter(List<PostModel> items) {
         this.items = items;
     }
 

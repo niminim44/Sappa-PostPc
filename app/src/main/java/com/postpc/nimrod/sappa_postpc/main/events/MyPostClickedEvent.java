@@ -1,16 +1,17 @@
 package com.postpc.nimrod.sappa_postpc.main.events;
 
-import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
+
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 
 public class MyPostClickedEvent {
 
-    private MyPostModel myPostModel;
+    private PostModel myPostModel;
 
-    public MyPostClickedEvent(MyPostModel myPostModel) {
+    public MyPostClickedEvent(PostModel myPostModel) {
         this.myPostModel = myPostModel;
     }
 
-    public MyPostModel getMyPostModel() {
+    public PostModel getMyPostModel() {
         return myPostModel;
     }
 }

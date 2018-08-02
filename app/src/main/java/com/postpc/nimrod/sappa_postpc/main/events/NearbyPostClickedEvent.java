@@ -1,16 +1,17 @@
 package com.postpc.nimrod.sappa_postpc.main.events;
 
-import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
+
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 
 public class NearbyPostClickedEvent {
 
-    private NearbyPostModel nearbyPostModel;
+    private PostModel nearbyPostModel;
 
-    public NearbyPostClickedEvent(NearbyPostModel nearbyPostModel) {
+    public NearbyPostClickedEvent(PostModel nearbyPostModel) {
         this.nearbyPostModel = nearbyPostModel;
     }
 
-    public NearbyPostModel getNearbyPostModel() {
+    public PostModel getNearbyPostModel() {
         return nearbyPostModel;
     }
 }

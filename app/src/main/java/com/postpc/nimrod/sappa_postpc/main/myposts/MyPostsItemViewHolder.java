@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.events.MyPostClickedEvent;
-import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -38,7 +38,7 @@ public class MyPostsItemViewHolder extends RecyclerView.ViewHolder{
         ButterKnife.bind(this, itemView);
     }
 
-    public void setData(MyPostModel myPostModel) {
+    public void setData(PostModel myPostModel) {
         titleTextView.setText(myPostModel.getTitle());
         descriptionTextView.setText(myPostModel.getDescription());
         Glide.with(imageView.getContext())
@@ -49,7 +49,7 @@ public class MyPostsItemViewHolder extends RecyclerView.ViewHolder{
         rippleView.setOnClickListener(getPostClickedListener(myPostModel));
     }
 
-    private View.OnClickListener getPostClickedListener(MyPostModel myPostModel) {
+    private View.OnClickListener getPostClickedListener(PostModel myPostModel) {
         return view -> EventBus.getDefault().post(new MyPostClickedEvent(myPostModel));
     }
 }

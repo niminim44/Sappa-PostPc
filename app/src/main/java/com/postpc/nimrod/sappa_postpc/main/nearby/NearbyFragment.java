@@ -1,13 +1,9 @@
 package com.postpc.nimrod.sappa_postpc.main.nearby;
 
 
-import android.content.Intent;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,7 +17,7 @@ import android.widget.Toast;
 
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.utils.LocationUtils;
-import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 import com.postpc.nimrod.sappa_postpc.repo.fake.FakeDataSupplier;
 
@@ -75,7 +71,7 @@ public class NearbyFragment extends Fragment implements NearbyContract.View{
     }
 
     @Override
-    public void initRecyclerView(List<NearbyPostModel> nearbyPostModels) {
+    public void initRecyclerView(List<PostModel> nearbyPostModels) {
         adapter = new NearbyRecyclerViewAdapter(nearbyPostModels);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);

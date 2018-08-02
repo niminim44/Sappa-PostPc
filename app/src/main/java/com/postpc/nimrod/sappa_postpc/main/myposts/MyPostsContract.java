@@ -1,6 +1,6 @@
 package com.postpc.nimrod.sappa_postpc.main.myposts;
 
-import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 
 import java.util.List;
 
@@ -12,7 +12,9 @@ public interface MyPostsContract {
 
         void hideProgressBar();
 
-        void initRecyclerView(List<MyPostModel> myPostModels);
+        void initRecyclerView(List<PostModel> myPostModels);
+
+        void showNoOwnPostsTextView();
     }
 
     interface Presenter{

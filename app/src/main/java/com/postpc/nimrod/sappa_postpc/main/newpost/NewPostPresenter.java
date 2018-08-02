@@ -13,7 +13,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.utils.LocationProvider;
-import com.postpc.nimrod.sappa_postpc.models.NewPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -114,7 +114,8 @@ class NewPostPresenter implements NewPostContract.Presenter{
             Uri downloadUri = task.getResult();
             view.showToast(R.string.image_uploaded_successfully);
             // Add post to DB.
-            NewPostModel newPost = new NewPostModel(downloadUri.toString(),
+            PostModel newPost = new PostModel(key,
+                    downloadUri.toString(),
                     view.getTitle(),
                     view.getDescription(),
                     currentLocation.getLatitude(),

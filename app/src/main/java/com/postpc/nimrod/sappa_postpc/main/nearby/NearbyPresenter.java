@@ -12,8 +12,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.postpc.nimrod.sappa_postpc.main.utils.LocationUtils;
-import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
-import com.postpc.nimrod.sappa_postpc.models.NewPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 import com.postpc.nimrod.sappa_postpc.repo.Repo;
 
@@ -39,7 +38,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
     // Get a reference to our posts
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference ref = database.getReference();
-    private ArrayList<NearbyPostModel> nearbyPostModels = new ArrayList<>();
+    private ArrayList<PostModel> nearbyPostModels = new ArrayList<>();
     private Location currentLocation;
 
     NearbyPresenter(NearbyContract.View view, Repo repo, Preferences preferences, LocationUtils locationUtils,
@@ -114,7 +113,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
                 //TODO - add category to NewPostModel to filter over it later.
                 Iterable<DataSnapshot> posts = postsSnapShot.getChildren();
                 for (DataSnapshot curPost : posts) {
-                    NewPostModel post = curPost.getValue(NewPostModel.class);
+                    PostModel post = curPost.getValue(PostModel.class);
 
                     // Calculate distance to current item.
                     Location.distanceBetween(myLatitude, myLongitude, post.getLatitude(), post.getLongitude(), dist);
@@ -135,13 +134,8 @@ class NearbyPresenter implements NearbyContract.Presenter{
                         // Filter current post according to category and search field.
                         // *contains() returns true on empty search
                         if ( categoryFits && ( titleFits || descriptionFits ) ) {
-                            nearbyPostModels.add(new NearbyPostModel(
-                                    post.getImageUrl(),
-                                    post.getTitle(),
-                                    post.getDescription(),
-                                    "",
-                                    Math.round(dist[0] * 0.001) + " km away",
-                                    post.getCategory()));
+                            post.setDistance(Math.round(dist[0] * 0.001) + " km away");
+                            nearbyPostModels.add(post);
                         }
                     }
                 }

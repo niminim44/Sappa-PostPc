@@ -7,16 +7,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
-import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 
 public class MyPostPresenter implements MyPostContract.Presenter{
 
     static final String TITLE = "title";
     static final String DESCRIPTION = "description";
     static final String IMAGE_URL = "image_url";
-    static final String DISTANCE = "distance";
-    static final String LOCATION = "location";
     static final String CATEGORY = "category";
+    static final String POST_ID = "post id";
+    static final String LATITUDE = "latitude";
+    static final String LONGITUDE = "longitude";
+    static final String USER_ID = "user id";
+    static final String USER_NAME = "user name";
+    static final String PHONE = "phone";
+    static final String EMAIL= "email";
 
     private MyPostContract.View view;
     private UiUtils uiUtils;
@@ -30,7 +35,7 @@ public class MyPostPresenter implements MyPostContract.Presenter{
     @Override
     public void init() {
         Bundle args = view.getPostArguments();
-        MyPostModel nearbyPostModel = toMyPostModel(args);
+        PostModel nearbyPostModel = toMyPostModel(args);
         String imageUrl = nearbyPostModel.getImageUrl();
         if(imageUrl != null){
             view.setImage(
@@ -72,12 +77,19 @@ public class MyPostPresenter implements MyPostContract.Presenter{
 
     }
 
-    private MyPostModel toMyPostModel(Bundle args) {
-        return new MyPostModel(
+    private PostModel toMyPostModel(Bundle args) {
+        return new PostModel(
+                args.getString(POST_ID),
                 args.getString(IMAGE_URL),
                 args.getString(TITLE),
                 args.getString(DESCRIPTION),
-                args.getString(CATEGORY)
+                args.getDouble(LATITUDE),
+                args.getDouble(LONGITUDE),
+                args.getString(USER_ID),
+                args.getString(USER_NAME),
+                args.getString(PHONE),
+                args.getString(CATEGORY),
+                args.getString(EMAIL)
         );
     }
 }

@@ -7,16 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.postpc.nimrod.sappa_postpc.R;
-import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class MyPostsRecyclerViewAdapter extends RecyclerView.Adapter<MyPostsItemViewHolder> {
 
-    private List<MyPostModel> items;
+    private List<PostModel> items;
 
-    public MyPostsRecyclerViewAdapter(List<MyPostModel> items) {
+    public MyPostsRecyclerViewAdapter(List<PostModel> items) {
         this.items = items;
     }
 

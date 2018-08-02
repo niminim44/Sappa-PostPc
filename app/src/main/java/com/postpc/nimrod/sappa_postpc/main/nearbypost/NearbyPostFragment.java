@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
-import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 
 import java.util.Objects;
 
@@ -25,10 +25,15 @@ import butterknife.OnClick;
 
 import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.CATEGORY;
 import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.DESCRIPTION;
-import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.DISTANCE;
+import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.EMAIL;
 import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.IMAGE_URL;
-import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.LOCATION;
+import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.LATITUDE;
+import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.LONGITUDE;
+import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.PHONE;
+import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.POST_ID;
 import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.TITLE;
+import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.USER_ID;
+import static com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostPresenter.USER_NAME;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,15 +57,20 @@ public class NearbyPostFragment extends Fragment implements NearbyPostContract.V
     TextView categoryTextView;
 
 
-    public static NearbyPostFragment newInstance(NearbyPostModel nearbyPostModel){
+    public static NearbyPostFragment newInstance(PostModel nearbyPostModel){
         NearbyPostFragment myFragment = new NearbyPostFragment();
         Bundle args = new Bundle();
         args.putString(TITLE, nearbyPostModel.getTitle());
         args.putString(DESCRIPTION, nearbyPostModel.getDescription());
         args.putString(IMAGE_URL, nearbyPostModel.getImageUrl());
-        args.putString(DISTANCE, nearbyPostModel.getDistance());
-        args.putString(LOCATION, nearbyPostModel.getLocation());
         args.putString(CATEGORY, nearbyPostModel.getCategory());
+        args.putString(USER_ID, nearbyPostModel.getUserID());
+        args.putString(USER_NAME, nearbyPostModel.getUserName());
+        args.putDouble(LATITUDE, nearbyPostModel.getLatitude());
+        args.putDouble(LONGITUDE, nearbyPostModel.getLongitude());
+        args.putString(PHONE, nearbyPostModel.getPhone());
+        args.putString(EMAIL, nearbyPostModel.getEmail());
+        args.putString(POST_ID, nearbyPostModel.getPostId());
         myFragment.setArguments(args);
         return myFragment;
     }
