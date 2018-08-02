@@ -13,8 +13,9 @@ public class Preferences {
     private static final String DEFAULT_USER_ID = "12345678";
     private static final String RANGE = "range";
     public static final String CATEGORY = "category";
-    private static final int DEAFULT_RANGE_VALUE = 10;
+    private static final int DEAFAULT_RANGE_VALUE = 10;
     public static final String DEFAULT_CATEGORY = "default_category";
+    private static final String DEFAULT_EMAIL = "no email info";
     private final SharedPreferences sharedPreferences;
 
     public Preferences(SharedPreferences sharedPreferences){
@@ -54,11 +55,35 @@ public class Preferences {
                 .apply();
     }
 
+    public void saveCurrentRangeFilter(Integer range){
+        sharedPreferences.edit()
+                .putInt(RANGE, range)
+                .apply();
+    }
+
+    public void saveCurrentCategoryFilter(String category){
+        sharedPreferences.edit()
+                .putString(CATEGORY, category)
+                .apply();
+    }
+
     public int getCurrentRangeFilter() {
-        return sharedPreferences.getInt(RANGE, DEAFULT_RANGE_VALUE);
+        return sharedPreferences.getInt(RANGE, DEAFAULT_RANGE_VALUE);
     }
 
     public String getCurrentCategoryFilter() {
         return sharedPreferences.getString(CATEGORY, DEFAULT_CATEGORY);
+    }
+
+    public String getUserEmail() {
+        return sharedPreferences.getString(EMAIL, DEFAULT_EMAIL);
+    }
+
+    public void clearAllFields() {
+        saveName(DEFAULT_USER_NAME);
+        saveEmail(DEFAULT_EMAIL);
+        saveUserId(DEFAULT_USER_ID);
+        saveCurrentCategoryFilter(DEFAULT_CATEGORY);
+        saveCurrentRangeFilter(DEAFAULT_RANGE_VALUE);
     }
 }

@@ -1,5 +1,6 @@
 package com.postpc.nimrod.sappa_postpc.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
@@ -13,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.login.LoginActivity;
 import com.postpc.nimrod.sappa_postpc.main.mypost.MyPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.nearbypost.NearbyPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.newpost.NewPostFragment;
@@ -156,6 +158,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 .addToBackStack("my_post_fragment")
                 .commit();
         container.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void finishAndOpenLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @OnClick(R.id.fab)

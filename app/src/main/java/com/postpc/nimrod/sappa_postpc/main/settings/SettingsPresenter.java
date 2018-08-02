@@ -1,44 +1,70 @@
 package com.postpc.nimrod.sappa_postpc.main.settings;
 
-import com.github.aakira.expandablelayout.Utils;
+import com.facebook.login.LoginManager;
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.main.events.LogoutEvent;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.greenrobot.eventbus.EventBus;
 
 class SettingsPresenter implements SettingsContract.Presenter{
 
+    private static final String BULLET = "\u2022 ";
     private SettingsContract.View view;
     private Preferences preferences;
+    private EventBus eventBus;
 
-    SettingsPresenter(SettingsContract.View view, Preferences preferences) {
+    private boolean userInfoExpandedState = false;
+    private boolean distanceExpandedState = false;
+
+    SettingsPresenter(SettingsContract.View view, Preferences preferences, EventBus eventBus) {
         this.view = view;
         this.preferences = preferences;
+        this.eventBus = eventBus;
     }
 
 
     @Override
     public void init() {
         view.setSettingsTitle(preferences.getUserName(), R.string.hi);
-        List<SettingModel> settingItems = getSettingItems();
-        view.initRecyclerView(settingItems);
+        view.initUserInfoLayout(userInfoExpandedState);
+        view.initUserInfo(BULLET + preferences.getUserName(), BULLET + preferences.getUserEmail());
+        view.initDistanceSettingsLayout(distanceExpandedState);
+        Integer currentDistanceFilter = preferences.getCurrentRangeFilter();
+        view.initCurrentDistance(currentDistanceFilter, currentDistanceFilter.toString() + " km");
     }
 
-    private List<SettingModel> getSettingItems() {
-        final List<SettingModel> data = new ArrayList<>();
-        data.add(new SettingModel(
-                R.string.user_info,
-                R.color.dodger_blue,
-                Utils.createInterpolator(Utils.FAST_OUT_SLOW_IN_INTERPOLATOR)));
-        data.add(new SettingModel(
-                R.string.notification_settings,
-                R.color.burnt_sienna,
-                Utils.createInterpolator(Utils.FAST_OUT_SLOW_IN_INTERPOLATOR)));
-        data.add(new SettingModel(
-                R.string.about,
-                R.color.jungle_green,
-                Utils.createInterpolator(Utils.FAST_OUT_SLOW_IN_INTERPOLATOR)));
-       return data;
+    @Override
+    public void onUserInfoPreOpen() {
+        userInfoExpandedState = true;
     }
+
+    @Override
+    public void onUserInfoPreClose() {
+        userInfoExpandedState = false;
+    }
+
+    @Override
+    public void onLogoutClicked() {
+        preferences.clearAllFields();
+        LoginManager.getInstance().logOut();
+        eventBus.post(new LogoutEvent());
+    }
+
+    @Override
+    public void onDistancePreOpen() {
+        distanceExpandedState = true;
+    }
+
+    @Override
+    public void onDistancePreClose() {
+        distanceExpandedState = false;
+    }
+
+    @Override
+    public void onDistanceChanged(int currentDistance, boolean fromUser) {
+        preferences.saveCurrentRangeFilter(currentDistance);
+        view.setDistanceTextView(currentDistance + " km");
+    }
+
 }

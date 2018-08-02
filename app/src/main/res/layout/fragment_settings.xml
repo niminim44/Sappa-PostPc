@@ -8,7 +8,7 @@
     tools:context=".main.settings.SettingsFragment">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/card_view"
+        android:id="@+id/title_card_view"
         android:layout_width="0dp"
         android:layout_height="82dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,14 +53,277 @@
 
     </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            tools:listitem="@layout/expandable_settings_item"
-            app:layout_constraintTop_toBottomOf="@id/card_view"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+    <android.support.v7.widget.CardView
+        android:id="@+id/user_info_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:cardCornerRadius="7dp"
+        android:background="@drawable/settings_item_shape"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        app:layout_constraintTop_toBottomOf="@id/title_card_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        xmlns:tools="http://schemas.android.com/tools">
+
+        <RelativeLayout
+            android:id="@+id/user_info_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/user_info_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:background="@drawable/rounded_corners"
+                >
+
+                <View
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:background="@drawable/expand_arrow"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/constraint_layout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@id/button"
+                android:padding="8dp"
+                android:background="@drawable/rounded_corners" >
+                
+                <View
+                    android:layout_width="5dp"
+                    android:layout_height="25dp"
+                    android:background="@color/dodger_blue"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:id="@+id/category_title_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="17sp"
+                    android:textColor="@color/charcole"
+                    android:text="@string/user_info"
+                    android:layout_marginStart="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+
+            <com.github.aakira.expandablelayout.ExpandableLinearLayout
+                android:id="@+id/user_info_expandableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/constraint_layout"
+                android:orientation="vertical"
+                app:ael_duration="400"
+                app:ael_expanded="false">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/user_name_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="&#8226; Nimrod Cohen"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textColor="@color/charcole"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/user_email_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="&#8226; niminim44@gmail.com"
+                        app:layout_constraintTop_toBottomOf="@id/user_name_text_view"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:textColor="@color/charcole"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/roboto_regular"
+                        />
+
+                    <Button
+                        android:id="@+id/logout_button"
+                        android:layout_width="100dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="30dp"
+                        android:text="@string/logout"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:layout_marginEnd="20dp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:background="@drawable/logout_button_background"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/user_email_text_view"/>
+
+
+
+                </android.support.constraint.ConstraintLayout>
+
+
+            </com.github.aakira.expandablelayout.ExpandableLinearLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/distance_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:cardCornerRadius="7dp"
+        android:background="@drawable/settings_item_shape"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        app:layout_constraintTop_toBottomOf="@id/user_info_card_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        xmlns:tools="http://schemas.android.com/tools">
+
+        <RelativeLayout
+            android:id="@+id/distance_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/distance_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:background="@drawable/rounded_corners"
+                >
+
+                <View
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:background="@drawable/expand_arrow"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/distance_constraint_layout"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@id/button"
+                android:padding="8dp"
+                android:background="@drawable/rounded_corners" >
+
+                <View
+                    android:layout_width="5dp"
+                    android:layout_height="25dp"
+                    android:background="@color/burnt_sienna"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <TextView
+                    android:id="@+id/distance_title_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textSize="17sp"
+                    android:textColor="@color/charcole"
+                    android:text="@string/distance_settings"
+                    android:layout_marginStart="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+
+            <com.github.aakira.expandablelayout.ExpandableLinearLayout
+                android:id="@+id/distance_expandableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/distance_constraint_layout"
+                android:orientation="vertical"
+                app:ael_duration="400"
+                app:ael_expanded="false">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/how_far_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/how_far_will_you_go"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textColor="@color/charcole"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <SeekBar
+                        android:id="@+id/distance_seek_bar"
+                        android:layout_width="0dp"
+                        android:layout_height="20dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:max="50"
+                        android:progress="0"
+                        android:progressBackgroundTint="@color/orchid"
+                        android:thumbTint="@color/royal_purple"
+                        app:layout_constraintTop_toBottomOf="@id/how_far_text_view"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/distance_text_view"/>
+
+                    <TextView
+                        android:id="@+id/distance_text_view"
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content"
+                        tools:text="20 Km"
+                        android:textSize="14sp"
+                        android:textColor="@color/charcole"
+                        android:fontFamily="@font/roboto_medium"
+                        app:layout_constraintTop_toTopOf="@id/distance_seek_bar"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                </android.support.constraint.ConstraintLayout>
+
+
+            </com.github.aakira.expandablelayout.ExpandableLinearLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
 
 </android.support.constraint.ConstraintLayout>

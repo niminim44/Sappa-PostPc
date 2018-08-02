@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.main.events.LogoutEvent;
 import com.postpc.nimrod.sappa_postpc.main.events.MyPostClickedEvent;
 import com.postpc.nimrod.sappa_postpc.main.events.NearbyPostClickedEvent;
 import com.postpc.nimrod.sappa_postpc.main.myposts.MyPostsFragment;
@@ -106,6 +107,11 @@ class MainPresenter implements MainContract.Presenter{
     public void onMyPostClicked(MyPostClickedEvent event){
         view.openMyPostFragment(event.getMyPostModel());
         view.slideDownFab(fabMarginsInPx);
+    }
+
+    @Subscribe
+    public void onLogoutEvent(LogoutEvent event){
+        view.finishAndOpenLoginActivity();
     }
 
     private TabLayout.OnTabSelectedListener getTabSelectedListener() {

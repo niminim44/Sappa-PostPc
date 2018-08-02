@@ -32,6 +32,8 @@ public interface MainContract {
         void openNearbyPostFragment(PostModel nearbyPostModel);
 
         void openMyPostFragment(PostModel myPostModel);
+
+        void finishAndOpenLoginActivity();
     }
 
     interface Presenter{
