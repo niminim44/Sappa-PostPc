@@ -67,7 +67,7 @@
             android:textColor="@color/charcoal_with_transparency"
             android:textSize="12sp"
             app:layout_constraintTop_toBottomOf="@id/title_text_view"
-            app:layout_constraintEnd_toEndOf="@id/title_text_view"/>
+            app:layout_constraintStart_toStartOf="@id/title_text_view"/>
 
         <TextView
             android:id="@+id/description_text_view"
