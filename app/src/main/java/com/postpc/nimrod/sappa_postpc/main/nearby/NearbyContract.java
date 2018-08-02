@@ -1,5 +1,7 @@
 package com.postpc.nimrod.sappa_postpc.main.nearby;
 
+import android.location.Location;
+
 import com.postpc.nimrod.sappa_postpc.models.NearbyPostModel;
 
 import java.util.List;
@@ -17,7 +19,7 @@ public interface NearbyContract {
 
     interface Presenter{
 
-        void init();
+        void init(Location location);
     }
 
 }

@@ -2,6 +2,10 @@ package com.postpc.nimrod.sappa_postpc.main.mypost;
 
 import android.os.Bundle;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
 import com.postpc.nimrod.sappa_postpc.models.MyPostModel;
 
@@ -50,6 +54,21 @@ public class MyPostPresenter implements MyPostContract.Presenter{
 
     @Override
     public void onDeleteClicked() {
+
+        // Delete file.
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl(IMAGE_URL);
+        storageRef.delete().addOnSuccessListener(aVoid ->  {
+            // File deleted successfully
+
+            // Get a reference to our posts.
+            DatabaseReference dbReference = FirebaseDatabase.getInstance().getReference("posts");
+            dbReference.child("key").removeValue();  //TODO - we need the post key + show toast + refresh myPosts fragment
+
+        }).addOnFailureListener(exception -> {
+            // Uh-oh, an error occurred!
+
+        });
 
     }
 

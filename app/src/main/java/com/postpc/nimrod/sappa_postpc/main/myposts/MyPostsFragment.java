@@ -23,6 +23,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -47,7 +49,7 @@ public class MyPostsFragment extends Fragment implements MyPostsContract.View{
                              Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.fragment_my_posts, container, false);
         ButterKnife.bind(this, v);
-        presenter = new MyPostsPresenter(this, new FakeDataSupplier(), getContext().getSharedPreferences(Preferences.PREFS_NAME, Context.MODE_PRIVATE));
+        presenter = new MyPostsPresenter(this, new FakeDataSupplier(), new Preferences(requireContext().getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)));
         presenter.init();
         return v;
     }
