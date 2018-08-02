@@ -17,6 +17,8 @@ public interface NearbyContract {
         void hideProgressBar();
 
         void showToastMessage(String text);
+
+        void showNoPostsAvailableTextView();
     }
 
     interface Presenter{

@@ -11,6 +11,10 @@ public class Preferences {
     private static final String EMAIL = "email";
     private static final String DEFAULT_USER_NAME = "default";
     private static final String DEFAULT_USER_ID = "12345678";
+    private static final String RANGE = "range";
+    public static final String CATEGORY = "category";
+    private static final int DEAFULT_RANGE_VALUE = 10;
+    public static final String DEFAULT_CATEGORY = "default_category";
     private final SharedPreferences sharedPreferences;
 
     public Preferences(SharedPreferences sharedPreferences){
@@ -48,5 +52,13 @@ public class Preferences {
         sharedPreferences.edit()
                 .putString(EMAIL, email)
                 .apply();
+    }
+
+    public int getCurrentRangeFilter() {
+        return sharedPreferences.getInt(RANGE, DEAFULT_RANGE_VALUE);
+    }
+
+    public String getCurrentCategoryFilter() {
+        return sharedPreferences.getString(CATEGORY, DEFAULT_CATEGORY);
     }
 }

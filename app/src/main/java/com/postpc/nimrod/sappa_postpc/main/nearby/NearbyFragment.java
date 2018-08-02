@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.postpc.nimrod.sappa_postpc.R;
@@ -45,6 +46,9 @@ public class NearbyFragment extends Fragment implements NearbyContract.View{
 
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+
+    @BindView(R.id.no_available_posts_text_view)
+    TextView noAvailablePostsTextView;
 
 
     private NearbyContract.Presenter presenter;
@@ -91,5 +95,10 @@ public class NearbyFragment extends Fragment implements NearbyContract.View{
     @Override
     public void showToastMessage(String text) {
         Toast.makeText(getContext(), text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showNoPostsAvailableTextView() {
+        noAvailablePostsTextView.setVisibility(View.VISIBLE);
     }
 }

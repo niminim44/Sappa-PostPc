@@ -5,7 +5,6 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,11 +18,9 @@ import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 import com.postpc.nimrod.sappa_postpc.repo.Repo;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -53,8 +50,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
         this.locationUtils = locationUtils;
         this.locationManager = locationManager;
         this.connectivityManager = connectivityManager;
-        range = 10;   //TODO - range value we need to store in preferences and replace this line with "preferences.getRange()"
-
+        range = preferences.getCurrentRangeFilter();
     }
 
     @Override
@@ -127,7 +123,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
                     if ((dist[0] * 0.001) < range) {
 
                         //TODO - values we need to store in preferences:
-                        String categoryFilter = "other";
+                        String categoryFilter = preferences.getCurrentCategoryFilter();
                         String titleFilter = "tv";
                         String descriptionFilter = "other";
 
@@ -149,9 +145,13 @@ class NearbyPresenter implements NearbyContract.Presenter{
                         }
                     }
                 }
-
                 view.hideProgressBar();
-                view.initRecyclerView(nearbyPostModels);
+                if(nearbyPostModels.isEmpty()){
+                    view.showNoPostsAvailableTextView();
+                }
+                else{
+                    view.initRecyclerView(nearbyPostModels);
+                }
             }
 
             @Override
