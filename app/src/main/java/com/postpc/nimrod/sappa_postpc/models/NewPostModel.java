@@ -13,7 +13,7 @@ public class NewPostModel {
     private double longitude;
     private String userID;
     private String contact;
-    private Long phone;
+    private String phone;
     private String category;
     private String email;
     //TODO - add category field (String or CONSTANT int) so we can filter posts when retrieving nearby posts.
@@ -22,7 +22,7 @@ public class NewPostModel {
     public NewPostModel() {}
 
     // Main constructor.
-    public NewPostModel(String imageUrl, String title, String description, double latitude, double longitude, String userID, String contact, Long phone, String category, String email) {
+    public NewPostModel(String imageUrl, String title, String description, double latitude, double longitude, String userID, String contact, String phone, String category, String email) {
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;
@@ -80,7 +80,7 @@ public class NewPostModel {
         return contact;
     }
 
-    public Long getPhone() {
+    public String getPhone() {
         return phone;
     }
 

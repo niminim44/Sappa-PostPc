@@ -121,8 +121,8 @@ class NewPostPresenter implements NewPostContract.Presenter{
                     currentLocation.getLongitude(),
                     userId,
                     prefs.getUserName(),
-                    Long.parseLong(view.getContactPhone()),
-                    view.getCategory(),
+                    view.getContactPhone(),
+                    getCategory(),
                     view.getEmail());
 
             // Write a message to the database.
@@ -132,6 +132,34 @@ class NewPostPresenter implements NewPostContract.Presenter{
         } else {
             view.showToast(R.string.failed_uploading_new_post);
         }
+    }
+
+    private String getCategory() {
+        String category = DEFAULT_CATEGORY;
+        switch (view.getCategoryButtonId()){
+            case R.id.electronics_checkbox:
+                category = ELECTRONICS_CATEGORY;
+                break;
+            case R.id.furniture_checkbox:
+                category = FURNITURE_CATEGORY;
+                break;
+            case R.id.books_checkbox:
+                category = BOOKS_CATEGORY;
+                break;
+            case R.id.clothing_checkbox:
+                category = CLOTHING_CATEGORY;
+                break;
+            case R.id.sports_checkbox:
+                category = SPORTS_CATEGORY;
+                break;
+            case R.id.children_checkbox:
+                category = CHILDREN_CATEGORY;
+                break;
+            case R.id.other_checkbox:
+                category = OTHER_CATEGORY;
+                break;
+        }
+        return category;
     }
 
     @NonNull

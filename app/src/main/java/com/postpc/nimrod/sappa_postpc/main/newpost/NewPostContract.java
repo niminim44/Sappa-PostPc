@@ -23,7 +23,7 @@ public interface NewPostContract {
 
         String getContactPhone();
 
-        String getCategory();
+        int getCategoryButtonId();
 
         void disablePublishButton();
 

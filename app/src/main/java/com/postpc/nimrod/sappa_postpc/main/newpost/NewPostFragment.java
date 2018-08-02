@@ -16,7 +16,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -171,12 +170,12 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
 
     @Override
     public String getContactPhone() {
-        return "012345678"; // TODO: 28/07/2018 implement this
+        return phoneEditText.getText().toString();
     }
 
     @Override
-    public String getCategory() {
-        return "electronics"; // TODO: 28/07/2018 implement this
+    public int getCategoryButtonId() {
+        return categoryRadioGroup.getCheckedRadioButtonId();
     }
 
     @Override

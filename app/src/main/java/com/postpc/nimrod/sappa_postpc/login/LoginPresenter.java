@@ -50,11 +50,10 @@ class LoginPresenter implements LoginContract.Presenter {
         }
     }
 
-    //TODO - I return 'true' to skip the log in screen.
     private boolean isLoggedIn() {
-        return true;
-//        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-//        return accessToken != null;
+//        return true;
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
     }
 
     @Override
