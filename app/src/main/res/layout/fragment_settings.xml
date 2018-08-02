@@ -299,6 +299,7 @@
                         android:layout_marginTop="20dp"
                         android:layout_marginEnd="20dp"
                         android:max="50"
+                        android:padding="16dp"
                         android:progress="0"
                         android:progressBackgroundTint="@color/orchid"
                         android:thumbTint="@color/royal_purple"
@@ -315,6 +316,7 @@
                         android:textColor="@color/charcole"
                         android:fontFamily="@font/roboto_medium"
                         app:layout_constraintTop_toTopOf="@id/distance_seek_bar"
+                        app:layout_constraintBottom_toBottomOf="@id/distance_seek_bar"
                         app:layout_constraintEnd_toEndOf="parent"/>
 
                 </android.support.constraint.ConstraintLayout>
