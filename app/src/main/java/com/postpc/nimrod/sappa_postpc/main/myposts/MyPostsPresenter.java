@@ -8,7 +8,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.postpc.nimrod.sappa_postpc.main.events.RefreshDataEvent;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
-import com.postpc.nimrod.sappa_postpc.repo.Repo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -19,7 +18,6 @@ import java.util.Objects;
 
 class MyPostsPresenter implements MyPostsContract.Presenter{
 
-    private final Repo repo;
     private Preferences preferences;
     private final MyPostsContract.View view;
     private String myUserId ;
@@ -30,9 +28,8 @@ class MyPostsPresenter implements MyPostsContract.Presenter{
     DatabaseReference ref = database.getReference();
 
 
-    MyPostsPresenter(MyPostsContract.View view, Repo repo, Preferences preferences, EventBus eventBus) {
+    MyPostsPresenter(MyPostsContract.View view, Preferences preferences, EventBus eventBus) {
         this.view = view;
-        this.repo = repo;
         this.preferences = preferences;
         myUserId = preferences.getUserId();
         this.eventBus = eventBus;

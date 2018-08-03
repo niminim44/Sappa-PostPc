@@ -62,7 +62,7 @@ public class NearbyFragment extends Fragment implements NearbyContract.View{
         View v =  inflater.inflate(R.layout.fragment_nearby, container, false);
         ButterKnife.bind(this, v);
 
-        presenter = new NearbyPresenter(this, null,
+        presenter = new NearbyPresenter(this,
                 new Preferences(requireContext().getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)),
                 new LocationUtils(requireContext(), requireActivity()),
                 (LocationManager) requireContext().getSystemService(LOCATION_SERVICE),

@@ -16,7 +16,6 @@ import com.postpc.nimrod.sappa_postpc.main.utils.LocationUtils;
 import com.postpc.nimrod.sappa_postpc.models.CategorySearchModel;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
-import com.postpc.nimrod.sappa_postpc.repo.Repo;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -33,7 +32,6 @@ class NearbyPresenter implements NearbyContract.Presenter{
 
 
     private NearbyContract.View view;
-    private Repo repo;
     private Preferences preferences;
     private LocationUtils locationUtils;
     private LocationManager locationManager;
@@ -48,10 +46,9 @@ class NearbyPresenter implements NearbyContract.Presenter{
     private ArrayList<PostModel> nearbyPostModels = new ArrayList<>();
     private Location currentLocation;
 
-    NearbyPresenter(NearbyContract.View view, Repo repo, Preferences preferences, LocationUtils locationUtils,
+    NearbyPresenter(NearbyContract.View view, Preferences preferences, LocationUtils locationUtils,
                     LocationManager locationManager, ConnectivityManager connectivityManager, EventBus eventBus) {
         this.view = view;
-        this.repo = repo;
         this.preferences = preferences;
         this.locationUtils = locationUtils;
         this.locationManager = locationManager;

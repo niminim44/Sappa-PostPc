@@ -52,7 +52,7 @@ public class MyPostsFragment extends Fragment implements MyPostsContract.View{
                              Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.fragment_my_posts, container, false);
         ButterKnife.bind(this, v);
-        presenter = new MyPostsPresenter(this, null,
+        presenter = new MyPostsPresenter(this,
                 new Preferences(requireContext().getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)),
                 EventBus.getDefault());
         presenter.init();
