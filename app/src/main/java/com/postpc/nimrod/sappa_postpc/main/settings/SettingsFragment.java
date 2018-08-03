@@ -40,6 +40,15 @@ public class SettingsFragment extends Fragment implements SettingsContract.View{
     @BindView(R.id.title_text_view)
     TextView titleTextView;
 
+    @BindView(R.id.about_expandableLayout)
+    ExpandableLinearLayout aboutExpandableLayout;
+
+    @BindView(R.id.about_card_view)
+    CardView aboutCardView;
+
+    @BindView(R.id.about_button)
+    ConstraintLayout aboutButton;
+
     @BindView(R.id.user_info_expandableLayout)
     ExpandableLinearLayout userInfoExpandedLayout;
 
@@ -171,6 +180,28 @@ public class SettingsFragment extends Fragment implements SettingsContract.View{
     @Override
     public void setDistanceTextView(String distance) {
         distanceTextView.setText(distance);
+    }
+
+    @Override
+    public void initAboutLayout(boolean aboutExpandedState) {
+        aboutExpandableLayout.setInRecyclerView(false);
+        aboutExpandableLayout.setInterpolator(Utils.createInterpolator(Utils.FAST_OUT_SLOW_IN_INTERPOLATOR));
+        aboutExpandableLayout.setExpanded(aboutExpandedState);
+        aboutExpandableLayout.setListener(new ExpandableLayoutListenerAdapter() {
+            @Override
+            public void onPreOpen() {
+                createRotateAnimator(aboutButton, 0f, 180f).start();
+                presenter.onAboutPreOpen();
+            }
+
+            @Override
+            public void onPreClose() {
+                createRotateAnimator(aboutButton, 180f, 0f).start();
+                presenter.onAboutPreClose();
+            }
+        });
+        aboutButton.setRotation(aboutExpandedState? 180f : 0f);
+        aboutCardView.setOnClickListener(view -> onClickButton(aboutExpandableLayout));
     }
 
     private void onClickButton(ExpandableLinearLayout expandableLayout) {

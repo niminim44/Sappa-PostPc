@@ -15,6 +15,8 @@ public interface SettingsContract {
         void initCurrentDistance(Integer initialProgress, String distanceText);
 
         void setDistanceTextView(String distance);
+
+        void initAboutLayout(boolean aboutExpandedState);
     }
 
     interface Presenter{
@@ -32,6 +34,10 @@ public interface SettingsContract {
         void onDistancePreClose();
 
         void onDistanceChanged(int currentDistance, boolean fromUser);
+
+        void onAboutPreOpen();
+
+        void onAboutPreClose();
     }
 
 }

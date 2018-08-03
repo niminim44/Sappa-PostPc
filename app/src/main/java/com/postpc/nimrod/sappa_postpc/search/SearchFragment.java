@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.postpc.nimrod.sappa_postpc.R;
@@ -89,5 +91,13 @@ public class SearchFragment extends Fragment implements SearchContract.View{
     @Override
     public void initSearchEditText(String freeTextFilter) {
         searchEditText.setText(freeTextFilter);
+        searchEditText.setOnEditorActionListener(((textView, actionId, keyEvent) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                InputMethodManager imm = (InputMethodManager)textView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                return true;
+            }
+            return false;
+        }));
     }
 }

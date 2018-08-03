@@ -41,7 +41,6 @@ public class MyPostsFragment extends Fragment implements MyPostsContract.View{
 
 
     private MyPostsContract.Presenter presenter;
-    private MyPostsRecyclerViewAdapter adapter;
 
     public MyPostsFragment() {
         // Required empty public constructor
@@ -71,7 +70,7 @@ public class MyPostsFragment extends Fragment implements MyPostsContract.View{
 
     @Override
     public void initRecyclerView(List<PostModel> myPostModels) {
-        adapter = new MyPostsRecyclerViewAdapter(myPostModels);
+        MyPostsRecyclerViewAdapter adapter = new MyPostsRecyclerViewAdapter(myPostModels);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();

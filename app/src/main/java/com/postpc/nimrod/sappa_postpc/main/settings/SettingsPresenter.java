@@ -16,6 +16,7 @@ class SettingsPresenter implements SettingsContract.Presenter{
 
     private boolean userInfoExpandedState = false;
     private boolean distanceExpandedState = false;
+    private boolean aboutExpandedState = false;
 
     SettingsPresenter(SettingsContract.View view, Preferences preferences, EventBus eventBus) {
         this.view = view;
@@ -32,6 +33,7 @@ class SettingsPresenter implements SettingsContract.Presenter{
         view.initDistanceSettingsLayout(distanceExpandedState);
         Integer currentDistanceFilter = preferences.getCurrentRangeFilter();
         view.initCurrentDistance(currentDistanceFilter, currentDistanceFilter.toString() + " km");
+        view.initAboutLayout(aboutExpandedState);
     }
 
     @Override
@@ -65,6 +67,16 @@ class SettingsPresenter implements SettingsContract.Presenter{
     public void onDistanceChanged(int currentDistance, boolean fromUser) {
         preferences.saveCurrentRangeFilter(currentDistance);
         view.setDistanceTextView(currentDistance + " km");
+    }
+
+    @Override
+    public void onAboutPreOpen() {
+        aboutExpandedState = true;
+    }
+
+    @Override
+    public void onAboutPreClose() {
+        aboutExpandedState = false;
     }
 
 }

@@ -8,7 +8,6 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
-import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
@@ -51,7 +50,6 @@ class LoginPresenter implements LoginContract.Presenter {
     }
 
     private boolean isLoggedIn() {
-//        return true;
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
     }
