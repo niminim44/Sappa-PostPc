@@ -35,6 +35,7 @@ public class SettingsFragment extends Fragment implements SettingsContract.View{
 
     private static final String EXCLAMATION_MARK = "!";
     private static final String SPACE = " ";
+    private static final long ANIMATION_DURATION = 300;
 
     @BindView(R.id.title_text_view)
     TextView titleTextView;
@@ -178,7 +179,7 @@ public class SettingsFragment extends Fragment implements SettingsContract.View{
 
     private ObjectAnimator createRotateAnimator(final View target, final float from, final float to) {
         ObjectAnimator animator = ObjectAnimator.ofFloat(target, "rotation", from, to);
-        animator.setDuration(300);
+        animator.setDuration(ANIMATION_DURATION);
         animator.setInterpolator(Utils.createInterpolator(Utils.LINEAR_INTERPOLATOR));
         return animator;
     }
