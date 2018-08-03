@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.models.CategorySearchModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,7 +34,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.setData(items.get(position));
+        holder.setData(items.get(position), position);
     }
 
     @Override
@@ -43,14 +42,8 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         return items.size();
     }
 
-    public List<CategorySearchModel> getSelectedItems(){
-        List<CategorySearchModel> selectedCategories = new ArrayList<>();
-        for(CategorySearchModel category: items){
-            if(category.isSelected()){
-                selectedCategories.add(new CategorySearchModel(category));
-            }
-        }
-        return selectedCategories;
+    public List<CategorySearchModel> getItems() {
+        return items;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -64,12 +57,15 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         @BindView(R.id.category_name_text_view)
         TextView categoryName;
 
+        private int position;
+
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void setData(CategorySearchModel categorySearchModel) {
+        void setData(CategorySearchModel categorySearchModel, int position) {
+            this.position = position;
             categoryName.setText(categorySearchModel.getName());
             if(categorySearchModel.isSelected()){
                 markAsSelected();
@@ -80,11 +76,13 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         }
 
         private void markAsUnSelected() {
+            items.get(position).setSelected(false);
             noIcon.setImageResource(R.drawable.no_on);
             yesIcon.setImageResource(R.drawable.yes_off);
         }
 
         private void markAsSelected() {
+            items.get(position).setSelected(true);
             noIcon.setImageResource(R.drawable.no_off);
             yesIcon.setImageResource(R.drawable.yes_on);
         }

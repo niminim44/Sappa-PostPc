@@ -1,6 +1,7 @@
 package com.postpc.nimrod.sappa_postpc.search;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,12 +14,18 @@ import android.widget.EditText;
 
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.models.CategorySearchModel;
+import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.postpc.nimrod.sappa_postpc.preferences.Preferences.PREFS_NAME;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +40,7 @@ public class SearchFragment extends Fragment implements SearchContract.View{
 
     @BindView(R.id.search_edit_text)
     EditText searchEditText;
+    private CategoriesAdapter adapter;
 
 
     public SearchFragment() {
@@ -44,20 +52,42 @@ public class SearchFragment extends Fragment implements SearchContract.View{
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_search, container, false);
         ButterKnife.bind(this, v);
-        presenter = new SearchPresenter(this);
+        presenter = new SearchPresenter(this,
+                new Preferences(Objects.requireNonNull(getContext()).getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)),
+                EventBus.getDefault());
         presenter.init();
         return v;
     }
 
-    @OnClick
+    @OnClick(R.id.search_button)
     public void onSearchClicked(){
-
+        presenter.onSearchClicked();
     }
 
     @Override
     public void initRecyclerView(List<CategorySearchModel> categoriesInfo) {
-        CategoriesAdapter adapter = new CategoriesAdapter(categoriesInfo);
+        adapter = new CategoriesAdapter(categoriesInfo);
         categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         categoriesRecyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public String getSearchEditTextInput() {
+        return searchEditText.getText().toString();
+    }
+
+    @Override
+    public List<CategorySearchModel> getCategoriesToSearch() {
+        return adapter.getItems();
+    }
+
+    @Override
+    public void callOnBackPressed() {
+        (Objects.requireNonNull(getActivity())).onBackPressed();
+    }
+
+    @Override
+    public void initSearchEditText(String freeTextFilter) {
+        searchEditText.setText(freeTextFilter);
     }
 }

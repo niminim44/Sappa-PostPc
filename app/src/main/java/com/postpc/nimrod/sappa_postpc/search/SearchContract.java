@@ -9,11 +9,21 @@ public interface SearchContract {
     interface View{
 
         void initRecyclerView(List<CategorySearchModel> categoriesInfo);
+
+        String getSearchEditTextInput();
+
+        List<CategorySearchModel> getCategoriesToSearch();
+
+        void callOnBackPressed();
+
+        void initSearchEditText(String freeTextFilter);
     }
 
     interface Presenter{
 
         void init();
+
+        void onSearchClicked();
     }
 
 }

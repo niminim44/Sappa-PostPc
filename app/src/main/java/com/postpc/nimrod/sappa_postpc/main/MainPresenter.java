@@ -47,6 +47,8 @@ class MainPresenter implements MainContract.Presenter{
     public void init() {
         subscribeEventBus();
         calcFabMarginsInPixels();
+        preferences.refreshSearchSettings();
+        preferences.saveFreeTextSearch("");
         view.setUserNameTextView(preferences.getUserName());
         view.setViewPagerAndTabsLayout(getViewPagerFragments(), getTabsLayoutsIds(),
                 getTabSelectedListener(), INITIAL_TAB_LAYOUT_POSITION);

@@ -1,40 +1,42 @@
 package com.postpc.nimrod.sappa_postpc.search;
 
+import com.postpc.nimrod.sappa_postpc.main.events.RefreshDataEvent;
 import com.postpc.nimrod.sappa_postpc.models.CategorySearchModel;
+import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
-import java.util.ArrayList;
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 class SearchPresenter implements SearchContract.Presenter {
 
-    private static final String ELECTRONICS = "Electronics";
-    private static final String FURNITURE = "Furniture";
-    private static final String BOOKS = "Books";
-    private static final String CLOTHING = "Clothing";
-    private static final String SPORTS = "Sports & Hobbies";
-    private static final String CHILDREN = "Children & Infants";
-    private static final String OTHER = "Other";
-
     private SearchContract.View view;
+    private Preferences preferences;
+    private EventBus eventBus;
 
-    SearchPresenter(SearchContract.View view) {
+    SearchPresenter(SearchContract.View view, Preferences preferences, EventBus eventBus) {
         this.view = view;
+        this.preferences = preferences;
+        this.eventBus = eventBus;
     }
 
     @Override
     public void init() {
+        view.initSearchEditText(preferences.getFreeTextFilter());
         view.initRecyclerView(getCategoriesInfo());
     }
 
+    @Override
+    public void onSearchClicked() {
+        String freeSearchText = view.getSearchEditTextInput();
+        List<CategorySearchModel> searchCategories = view.getCategoriesToSearch();
+        preferences.saveCurrentCategoryFilter(searchCategories);
+        preferences.saveFreeTextSearch(freeSearchText);
+        eventBus.post(new RefreshDataEvent());
+        view.callOnBackPressed();
+    }
+
     private List<CategorySearchModel> getCategoriesInfo() {
-        List<CategorySearchModel> categories = new ArrayList<>();
-        categories.add(new CategorySearchModel(ELECTRONICS, true));
-        categories.add(new CategorySearchModel(FURNITURE, true));
-        categories.add(new CategorySearchModel(BOOKS, true));
-        categories.add(new CategorySearchModel(CLOTHING, true));
-        categories.add(new CategorySearchModel(SPORTS, true));
-        categories.add(new CategorySearchModel(CHILDREN, true));
-        categories.add(new CategorySearchModel(OTHER, true));
-        return categories;
+        return preferences.getCurrentCategoryFilter();
     }
 }

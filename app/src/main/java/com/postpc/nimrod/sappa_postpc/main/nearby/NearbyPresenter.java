@@ -13,6 +13,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.postpc.nimrod.sappa_postpc.main.events.RefreshDataEvent;
 import com.postpc.nimrod.sappa_postpc.main.utils.LocationUtils;
+import com.postpc.nimrod.sappa_postpc.models.CategorySearchModel;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 import com.postpc.nimrod.sappa_postpc.repo.Repo;
@@ -21,6 +22,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -135,21 +137,21 @@ class NearbyPresenter implements NearbyContract.Presenter{
                     if ((dist[0] * 0.001) < range) {
 
                         //TODO - values we need to store in preferences:
-                        String categoryFilter = preferences.getCurrentCategoryFilter();
-                        String titleFilter = "";
-                        String descriptionFilter = "";
+                        List<CategorySearchModel> categoryFilter = preferences.getCurrentCategoryFilter();
+                        String freeTextFilter = preferences.getFreeTextFilter();
 
                         // Check if current post fits the filtering parameters.
-                        categoryFits = categoryFilter.toLowerCase().contains(post.getCategory().toLowerCase());
-                        titleFits = titleFilter.toLowerCase().contains(post.getTitle().toLowerCase());
-                        descriptionFits = descriptionFilter.toLowerCase().contains(post.getDescription().toLowerCase());
+                        categoryFits = checkCategoryByFilter(categoryFilter, post.getCategory().toLowerCase());
+                        titleFits = freeTextFilter.toLowerCase().contains(post.getTitle().toLowerCase());
+                        descriptionFits = post.getDescription().toLowerCase().contains(freeTextFilter.toLowerCase());
 
                         // Filter current post according to category and search field.
                         // *contains() returns true on empty search
-//                        if ( categoryFits && ( titleFits || descriptionFits ) ) {
+                        if ( categoryFits && ( titleFits || descriptionFits ) ) {
+//                        if(categoryFits){
                             post.setDistance(Math.round(dist[0] * 0.001) + " km away");
                             nearbyPostModels.add(post);
-//                        }
+                        }
                     }
                 }
                 view.hideProgressBar();
@@ -168,6 +170,15 @@ class NearbyPresenter implements NearbyContract.Presenter{
                 Log.e("The read failed: ",  databaseError.toString());
             }
         });
+    }
+
+    private boolean checkCategoryByFilter(List<CategorySearchModel> categoryFilter, String currentCategory) {
+        for(CategorySearchModel category: categoryFilter){
+            if(category.getName().toLowerCase().contains(currentCategory) && category.isSelected()){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void retryInFiveSeconds() {
