@@ -11,14 +11,29 @@
                   <entry key="vectorAssetStep">
                     <value>
                       <PersistentState>
+                        <option name="children">
+                          <map>
+                            <entry key="clipartAsset">
+                              <value>
+                                <PersistentState>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="url" value="jar:file:/Applications/Android%20Studio.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_search_black_24dp.xml" />
+                                    </map>
+                                  </option>
+                                </PersistentState>
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
                         <option name="values">
                           <map>
-                            <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="1080" />
-                            <entry key="outputName" value="ic_camera" />
+                            <entry key="color" value="3a444a" />
+                            <entry key="height" value="17" />
+                            <entry key="outputName" value="ic_search_charcole_24dp" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\Dima Pavlenko\Desktop\camera.svg" />
-                            <entry key="width" value="1920" />
+                            <entry key="sourceFile" value="$APPLICATION_HOME_DIR$/bin/C:\Users\Dima Pavlenko\Desktop\camera.svg" />
+                            <entry key="width" value="17" />
                           </map>
                         </option>
                       </PersistentState>

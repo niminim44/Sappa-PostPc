@@ -39,7 +39,7 @@
     <string name="failed_to_upload_image">Failed image upload to storage task</string>
     <string name="image_uploaded_successfully">Image uploaded to storage</string>
     <string name="post_published_successfully">Published successfully</string>
-    <string name="failed_uploading_new_post" >Failed image upload to storage</string>
+    <string name="failed_uploading_new_post">Failed image upload to storage</string>
     <string name="contact_info_enter_at_least_one">Contact info (enter at least one)</string>
     <string name="email">Email</string>
     <string name="item_location">Item location</string>
@@ -52,5 +52,7 @@
     <string name="logout">logout</string>
     <string name="distance_settings">Distance Settings</string>
     <string name="how_far_will_you_go">How far will you go?</string>
+    <string name="about_sappa">About Sappa</string>
+    <string name="search">Search</string>
 
 </resources>

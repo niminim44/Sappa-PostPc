@@ -72,6 +72,8 @@ class MainPresenter implements MainContract.Presenter{
     public void onFabClicked() {
         switch (currentPagePosition){
             case NEARBY_POSITION:
+                view.slideDownFab(fabMarginsInPx);
+                view.openSearchFragment();
                 break;
             case MYPOSTS_POSITION:
                 view.slideDownFab(fabMarginsInPx);

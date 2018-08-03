@@ -21,6 +21,7 @@ import com.postpc.nimrod.sappa_postpc.main.newpost.NewPostFragment;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
+import com.postpc.nimrod.sappa_postpc.search.SearchFragment;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -165,6 +166,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void openSearchFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, new SearchFragment())
+                .addToBackStack("search")
+                .commit();
+        container.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.fab)

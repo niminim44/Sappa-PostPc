@@ -34,6 +34,8 @@ public interface MainContract {
         void openMyPostFragment(PostModel myPostModel);
 
         void finishAndOpenLoginActivity();
+
+        void openSearchFragment();
     }
 
     interface Presenter{

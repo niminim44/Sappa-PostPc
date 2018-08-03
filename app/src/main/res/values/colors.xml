@@ -15,7 +15,7 @@
     <color name="dodger_blue">#2e8dff</color>
     <color name="burnt_sienna">#EF824D</color>
     <color name="jungle_green">#0CA88A</color>
-    <color name="very_transparent_black">#20000000</color>
+    <color name="semi_transparent_black">#90000000</color>
     <color name="rich_lilach">#b262d1</color>
     <color name="very_transparent_white">#10ffffff</color>
     <color name="green">#42f465</color>
