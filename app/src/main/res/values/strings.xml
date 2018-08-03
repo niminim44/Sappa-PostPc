@@ -54,5 +54,7 @@
     <string name="how_far_will_you_go">How far will you go?</string>
     <string name="about_sappa">About Sappa</string>
     <string name="search">Search</string>
+    <string name="or_select_categories">Or select categories</string>
+    <string name="find_me_neat_stuff">Find me neat stuff!</string>
 
 </resources>
