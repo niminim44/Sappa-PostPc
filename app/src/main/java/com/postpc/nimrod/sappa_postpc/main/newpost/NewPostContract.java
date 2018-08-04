@@ -96,6 +96,10 @@ public interface NewPostContract {
         void showLastLocationTextView();
 
         void showCurrentImageUrl(String imageUrl);
+
+        void loadImageFromPath();
+
+        String getCurrentPhotoPath();
     }
 
     interface Presenter{

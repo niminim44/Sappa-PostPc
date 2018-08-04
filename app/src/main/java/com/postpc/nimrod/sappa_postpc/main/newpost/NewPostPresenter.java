@@ -19,6 +19,8 @@ import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
@@ -336,8 +338,9 @@ class NewPostPresenter implements NewPostContract.Presenter{
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
-                    imageUri = imageReturnedIntent.getData();
-                    view.setImageUri(imageUri);
+                    view.loadImageFromPath();
+                    view.hideUploadImageTextView();
+                    imageUri = Uri.fromFile(new File(view.getCurrentPhotoPath()));
                     fieldChangedPublishSubject.onNext(IGNORED_VALUE);
                 }
                 break;

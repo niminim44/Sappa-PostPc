@@ -2,14 +2,18 @@ package com.postpc.nimrod.sappa_postpc.main.newpost;
 
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
@@ -39,6 +43,10 @@ import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -111,6 +119,7 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
 
 
     private NewPostContract.Presenter presenter;
+    private String currentPhotoPath;
 
 
     public NewPostFragment() {
@@ -140,8 +149,48 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
 
     @Override
     public void openCamera() {
-        Intent takePicture  = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takePicture , 1);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(Objects.requireNonNull(getContext()).getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(getContext(),
+                        getContext().getPackageName() + ".provider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, 1);
+            }
+        }
+
+
+//
+//        Intent takePicture  = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//
+//
+//        startActivityForResult(takePicture , 1);
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     @Override
@@ -453,6 +502,20 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
                 .apply(new RequestOptions().centerCrop())
                 .into(imageView);
         imageView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void loadImageFromPath() {
+        Glide.with(imageView.getContext())
+                .load(currentPhotoPath)
+                .apply(new RequestOptions().centerCrop())
+                .into(imageView);
+        imageView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public String getCurrentPhotoPath() {
+        return currentPhotoPath;
     }
 
     @OnClick(R.id.publish_button)
