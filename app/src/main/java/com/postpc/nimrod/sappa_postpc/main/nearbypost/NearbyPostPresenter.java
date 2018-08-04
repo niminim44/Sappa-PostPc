@@ -68,22 +68,32 @@ class NearbyPostPresenter implements NearbyPostContract.Presenter{
     @Override
     public void onNeedItClicked() {
         String[] pictureDialogItems = getDialogItems();
-        view.createAlertDialog(R.string.select_action, pictureDialogItems, (dialog, which) -> {
-            switch (which) {
-                case 0:
-                    view.callOwner(nearbyPostModel.getPhone());
-                    break;
-                case 1:
-                    view.messageOwner(nearbyPostModel.getTitle(), nearbyPostModel.getPhone());
-                    break;
-                case 2:
-                    view.whatsappOwner(nearbyPostModel.getTitle(), nearbyPostModel.getPhone());
-                    break;
-                case 3:
-                    view.emailOwner(nearbyPostModel.getTitle(), nearbyPostModel.getEmail());
-                    break;
-            }
-        });
+        view.createAlertDialog(R.string.select_action, pictureDialogItems, (dialog, which) -> performConnection(which, pictureDialogItems));
+    }
+
+    private void performConnection(int which, String[] pictureDialogItems) {
+        if(pictureDialogItems.length == 1){
+            view.emailOwner(nearbyPostModel.getTitle(), nearbyPostModel.getEmail());
+        } else {
+            handleCases(which);
+        }
+    }
+
+    private void handleCases(int which) {
+        switch (which){
+            case 0:
+                view.callOwner(nearbyPostModel.getPhone());
+                break;
+            case 1:
+                view.messageOwner(nearbyPostModel.getTitle(), nearbyPostModel.getPhone());
+                break;
+            case 2:
+                view.whatsappOwner(nearbyPostModel.getTitle(), nearbyPostModel.getPhone());
+                break;
+            case 3:
+                view.emailOwner(nearbyPostModel.getTitle(), nearbyPostModel.getEmail());
+                break;
+        }
     }
 
     private String[] getDialogItems() {
