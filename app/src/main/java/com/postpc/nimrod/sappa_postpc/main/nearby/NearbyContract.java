@@ -1,6 +1,8 @@
 package com.postpc.nimrod.sappa_postpc.main.nearby;
 
 
+import android.location.LocationManager;
+
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
 
 import java.util.List;
@@ -20,6 +22,8 @@ public interface NearbyContract {
         void showNoPostsAvailableTextView();
 
         void hideNoPostsAvailableTextView();
+
+        LocationManager getLocationManager();
     }
 
     interface Presenter{

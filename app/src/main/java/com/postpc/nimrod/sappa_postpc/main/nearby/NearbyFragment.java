@@ -65,7 +65,6 @@ public class NearbyFragment extends Fragment implements NearbyContract.View{
         presenter = new NearbyPresenter(this,
                 new Preferences(requireContext().getSharedPreferences(Preferences.PREFS_NAME, MODE_PRIVATE)),
                 new LocationUtils(requireContext(), requireActivity()),
-                (LocationManager) requireContext().getSystemService(LOCATION_SERVICE),
                 (ConnectivityManager)requireContext().getSystemService(CONNECTIVITY_SERVICE),
                 EventBus.getDefault());
         presenter.init();
@@ -103,6 +102,11 @@ public class NearbyFragment extends Fragment implements NearbyContract.View{
     @Override
     public void hideNoPostsAvailableTextView() {
         noAvailablePostsTextView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public LocationManager getLocationManager() {
+        return (LocationManager) requireContext().getSystemService(LOCATION_SERVICE);
     }
 
     @Override

@@ -419,6 +419,8 @@
             android:layout_height="30dp"
             android:layout_marginTop="9dp"
             android:visibility="gone"
+            android:backgroundTint="@color/white"
+            android:background="@xml/white_progress_bar"
             app:layout_constraintTop_toBottomOf="@id/or_text_view"
             app:layout_constraintStart_toStartOf="@id/or_text_view"/>
 
@@ -470,11 +472,13 @@
 
         <ProgressBar
             android:id="@+id/publish_progress_bar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/white"
             android:visibility="gone"
+            android:background="@xml/white_progress_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/location_progress_bar"

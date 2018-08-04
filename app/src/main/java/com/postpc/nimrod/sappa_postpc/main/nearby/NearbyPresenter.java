@@ -47,12 +47,10 @@ class NearbyPresenter implements NearbyContract.Presenter{
     private ArrayList<PostModel> nearbyPostModels = new ArrayList<>();
     private Location currentLocation;
 
-    NearbyPresenter(NearbyContract.View view, Preferences preferences, LocationUtils locationUtils,
-                    LocationManager locationManager, ConnectivityManager connectivityManager, EventBus eventBus) {
+    NearbyPresenter(NearbyContract.View view, Preferences preferences, LocationUtils locationUtils, ConnectivityManager connectivityManager, EventBus eventBus) {
         this.view = view;
         this.preferences = preferences;
         this.locationUtils = locationUtils;
-        this.locationManager = locationManager;
         this.connectivityManager = connectivityManager;
         range = preferences.getCurrentRangeFilter();
         this.eventBus = eventBus;
@@ -63,7 +61,12 @@ class NearbyPresenter implements NearbyContract.Presenter{
         nearbyPostModels = new ArrayList<>();
         subscribeEventBus();
         view.showProgressBar();
-        checkForInternetAndGpsConnectivity();
+        Observable.interval(0, 5000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .takeUntil(aLong -> currentLocation != null)
+                .doOnNext(aLong -> checkForInternetAndGpsConnectivity())
+                .subscribe();
     }
 
     @Override
@@ -72,6 +75,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
     }
 
     private void checkForInternetAndGpsConnectivity() {
+        locationManager = view.getLocationManager();
         boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null &&
@@ -108,6 +112,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
         ref.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                nearbyPostModels = new ArrayList<>();
                 // Set default location (Givat Ram - Computer Science  building)
                 double myLatitude = currentLocation.getLatitude();
                 double myLongitude = currentLocation.getLongitude();

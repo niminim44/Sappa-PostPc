@@ -74,6 +74,7 @@ class MainPresenter implements MainContract.Presenter{
 
     @Override
     public void onFabClicked() {
+        calcFabMarginsInPixels();
         switch (currentPagePosition){
             case NEARBY_POSITION:
                 view.slideDownFab(fabMarginsInPx);
@@ -100,17 +101,20 @@ class MainPresenter implements MainContract.Presenter{
 
     @Override
     public void onBackPressed() {
+        calcFabMarginsInPixels();
         view.slideUpFab(fabMarginsInPx);
     }
 
     @Subscribe
     public void onNearbyPostClicked(NearbyPostClickedEvent event){
+        calcFabMarginsInPixels();
         view.openNearbyPostFragment(event.getNearbyPostModel());
         view.slideDownFab(fabMarginsInPx);
     }
 
     @Subscribe
     public void onMyPostClicked(MyPostClickedEvent event){
+        calcFabMarginsInPixels();
         view.openMyPostFragment(event.getMyPostModel());
         view.slideDownFab(fabMarginsInPx);
     }
@@ -153,6 +157,7 @@ class MainPresenter implements MainContract.Presenter{
     }
 
     private void handleFab(int position) {
+        calcFabMarginsInPixels();
         switch (position){
             case NEARBY_POSITION:
                 view.slideUpFab(fabMarginsInPx);
