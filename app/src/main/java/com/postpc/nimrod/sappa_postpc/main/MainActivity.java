@@ -177,6 +177,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         container.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void openNewPostFragment(PostModel postModel) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, NewPostFragment.newInstance(postModel))
+                .addToBackStack("new_post")
+                .commit();
+        container.setVisibility(View.VISIBLE);
+    }
+
     @OnClick(R.id.fab)
     public void onFabClicked(){
         presenter.onFabClicked();

@@ -6,6 +6,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.postpc.nimrod.sappa_postpc.main.events.EditPostEvent;
 import com.postpc.nimrod.sappa_postpc.main.events.RefreshDataEvent;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
@@ -60,7 +61,7 @@ public class MyPostPresenter implements MyPostContract.Presenter{
 
     @Override
     public void onEditClicked() {
-
+        eventBus.post(new EditPostEvent(new PostModel(nearbyPostModel)));
     }
 
     @Override

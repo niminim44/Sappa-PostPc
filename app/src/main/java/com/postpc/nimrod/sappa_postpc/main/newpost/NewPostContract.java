@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
+
 public interface NewPostContract {
 
     interface View{
@@ -61,9 +63,39 @@ public interface NewPostContract {
 
         void setImageBitmap(Bitmap thumbnail);
 
+        void hideUploadImageTextView();
+
         void showPublishProgressBar();
 
         void callOnBackPressed();
+
+        PostModel getPostToEdit();
+
+        void setTitle(String title);
+
+        void setDescription(String description);
+
+        void selectCategory(int categoryButtonId);
+
+        void setEmail(String email);
+
+        void setPhone(String phone);
+
+        void hideLastLocationTextView();
+
+        void setCurrentLocationTextViewColor(int colorResourceId);
+
+        void setLastLocationTextColor(int colorResourceId);
+
+        void setCurrentLocationClickable();
+
+        void setLastLocationUnclickable();
+
+        void setLastLocationClickable();
+
+        void showLastLocationTextView();
+
+        void showCurrentImageUrl(String imageUrl);
     }
 
     interface Presenter{
@@ -89,5 +121,7 @@ public interface NewPostContract {
         void phoneTextChanged(String phone);
 
         void onUseCurrentLocationClicked();
+
+        void onLastLocationClicked();
     }
 }

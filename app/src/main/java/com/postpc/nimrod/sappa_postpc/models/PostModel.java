@@ -33,6 +33,20 @@ public class PostModel {
         this.email = email;
     }
 
+    public PostModel(PostModel nearbyPostModel) {
+        this.postId = nearbyPostModel.getPostId();
+        this.imageUrl = nearbyPostModel.getImageUrl();
+        this.title = nearbyPostModel.getTitle();
+        this.description = nearbyPostModel.getDescription();
+        this.latitude = nearbyPostModel.getLatitude();
+        this.longitude = nearbyPostModel.getLongitude();
+        this.userID = nearbyPostModel.getUserID();
+        this.userName = nearbyPostModel.getUserName();
+        this.phone = nearbyPostModel.getPhone();
+        this.category = nearbyPostModel.getCategory();
+        this.email = nearbyPostModel.getEmail();
+    }
+
     public String getPostId() {
         return postId;
     }

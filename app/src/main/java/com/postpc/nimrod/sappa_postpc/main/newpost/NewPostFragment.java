@@ -31,8 +31,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.github.aakira.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.github.aakira.expandablelayout.Utils;
+import com.google.gson.Gson;
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.utils.LocationProvider;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
 import org.greenrobot.eventbus.EventBus;
@@ -50,6 +52,8 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class NewPostFragment extends Fragment implements NewPostContract.View{
 
+    private static final String POST_TO_EDIT = "post to edit";
+    private static final String IS_EDIT_MODE = "is edit mode";
     @BindView(R.id.category_button)
     ConstraintLayout buttonLayout;
 
@@ -85,6 +89,12 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
 
     @BindView(R.id.user_current_location_text_view)
     TextView useCurrentLocationTextView;
+
+    @BindView(R.id.last_location_text_view)
+    TextView lastLocationTextView;
+
+    @BindView(R.id.or_text_view)
+    TextView orTextView;
 
     @BindView(R.id.location_progress_bar)
     ProgressBar locationProgressBar;
@@ -174,7 +184,6 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
                 .apply(new RequestOptions().centerCrop())
                 .into(imageView);
         imageView.setVisibility(View.VISIBLE);
-        uploadImageButton.setVisibility(View.GONE);
     }
 
     @Override
@@ -344,6 +353,10 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
                 .apply(new RequestOptions().centerCrop())
                 .into(imageView);
         imageView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideUploadImageTextView() {
         uploadImageButton.setVisibility(View.GONE);
     }
 
@@ -356,6 +369,90 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
     @Override
     public void callOnBackPressed() {
         Objects.requireNonNull(getActivity()).onBackPressed();
+    }
+
+    @Override
+    public PostModel getPostToEdit() {
+        Bundle args = getArguments();
+        if(args != null && args.getBoolean(IS_EDIT_MODE, false)){
+            return (new Gson()).fromJson(args.getString(POST_TO_EDIT), PostModel.class);
+        }
+        return null;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        titleEditText.setText(title);
+    }
+
+    @Override
+    public void setDescription(String description) {
+        descriptionEditText.setText(description);
+    }
+
+    @Override
+    public void selectCategory(int categoryButtonId) {
+        categoryRadioGroup.check(categoryButtonId);
+    }
+
+    @Override
+    public void setEmail(String email) {
+        if(email != null){
+            emailEditText.setText(email);
+        }
+    }
+
+    @Override
+    public void setPhone(String phone) {
+        if(phone != null){
+            phoneEditText.setText(phone);
+        }
+    }
+
+    @Override
+    public void hideLastLocationTextView() {
+        lastLocationTextView.setVisibility(View.GONE);
+        orTextView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void setCurrentLocationTextViewColor(int colorResourceId) {
+        useCurrentLocationTextView.setTextColor(getResources().getColor(colorResourceId));
+    }
+
+    @Override
+    public void setLastLocationTextColor(int colorResourceId) {
+        lastLocationTextView.setTextColor(getResources().getColor(colorResourceId));
+    }
+
+    @Override
+    public void setCurrentLocationClickable() {
+        useCurrentLocationTextView.setClickable(true);
+    }
+
+    @Override
+    public void setLastLocationUnclickable() {
+        lastLocationTextView.setClickable(false);
+    }
+
+    @Override
+    public void setLastLocationClickable() {
+        lastLocationTextView.setClickable(true);
+    }
+
+    @Override
+    public void showLastLocationTextView() {
+        lastLocationTextView.setVisibility(View.VISIBLE);
+        orTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showCurrentImageUrl(String imageUrl) {
+        Glide.with(imageView.getContext())
+                .load(imageUrl)
+                .apply(new RequestOptions().centerCrop())
+                .into(imageView);
+        imageView.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.publish_button)
@@ -375,6 +472,16 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
 
     @OnClick(R.id.upload_image_text_view)
     public void onUploadImageClicked(){
+        showPictureDialog();
+    }
+
+    @OnClick(R.id.last_location_text_view)
+    public void onLastLocationClicked(){
+        presenter.onLastLocationClicked();
+    }
+
+    @OnClick(R.id.image_view)
+    public void onImageViewClicked(){
         showPictureDialog();
     }
 
@@ -417,5 +524,15 @@ public class NewPostFragment extends Fragment implements NewPostContract.View{
         animator.setDuration(300);
         animator.setInterpolator(Utils.createInterpolator(Utils.LINEAR_INTERPOLATOR));
         return animator;
+    }
+
+    public static NewPostFragment newInstance(PostModel postModel) {
+        NewPostFragment newPostFragment= new NewPostFragment();
+        Bundle args = new Bundle();
+        String postModelJson = (new Gson()).toJson(postModel);
+        args.putString(POST_TO_EDIT, postModelJson);
+        args.putBoolean(IS_EDIT_MODE, true);
+        newPostFragment.setArguments(args);
+        return newPostFragment;
     }
 }

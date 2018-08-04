@@ -39,6 +39,7 @@ class NewPostPresenter implements NewPostContract.Presenter{
     private static final Boolean IGNORED_VALUE = true;
     private static final int DESCRIPTION_MAX_LENGTH = 140;
     static final String IMAGE_DIRECTORY = "/sappa_images/";
+    private static final int NO_MATCHING_CATEGORY = -1;
     private final LocationProvider locationProvider;
     private EventBus eventBus;
 
@@ -57,6 +58,9 @@ class NewPostPresenter implements NewPostContract.Presenter{
     private boolean validEmail = false;
     private boolean validPhone = false;
     private Location currentLocation;
+    private boolean isEdit;
+    private boolean useLastLocation = false;
+    private PostModel postToEdit;
 
     NewPostPresenter(NewPostContract.View view, Preferences prefs, LocationProvider locationProvider,
                      EventBus eventBus) {
@@ -68,16 +72,42 @@ class NewPostPresenter implements NewPostContract.Presenter{
 
     @Override
     public void init() {
-        selectedRadioButton = DEFAULT_CATEGORY;
+        view.disablePublishButton();
         initFirebaseDatabase();
         view.initCategoryLayout(categoryExpandedState);
-        view.disablePublishButton();
         view.initCategoryRadioGroup();
         view.initTitleEditTextListener();
         view.initDescriptionEditTextListener();
         view.initEmailEditTextListener();
         view.initPhoneEditTextListener();
         listenToFieldChanges();
+        PostModel postToEdit = view.getPostToEdit();
+        if(postToEdit == null){
+            isEdit = false;
+            initNewPost();
+        }
+        else{
+            this.postToEdit = postToEdit;
+            isEdit = true;
+            initEditPost();
+        }
+    }
+
+    private void initEditPost(){
+        selectedRadioButton = postToEdit.getCategory();
+        view.setTitle(postToEdit.getTitle());
+        view.setDescription(postToEdit.getDescription());
+        view.selectCategory(getCategoryButtonId(postToEdit.getCategory()));
+        view.setEmail(postToEdit.getEmail());
+        view.setPhone(postToEdit.getPhone());
+        view.showLastLocationTextView();
+        view.showCurrentImageUrl(postToEdit.getImageUrl());
+        view.hideUploadImageTextView();
+    }
+
+    private void initNewPost() {
+        selectedRadioButton = DEFAULT_CATEGORY;
+        view.hideLastLocationTextView();
     }
 
     private void listenToFieldChanges() {
@@ -100,6 +130,90 @@ class NewPostPresenter implements NewPostContract.Presenter{
 
     @Override
     public void onPublishClicked() {
+        if(isEdit){
+//            editPost();
+        } else {
+            publishNewPost();
+        }
+    }
+
+    private void editPost() {
+        // Get additional info for post.
+        String userId = postToEdit.getUserID();
+        view.showPublishProgressBar();
+
+        // Use push() to create a post unique key in the node containing posts.
+        String key = myRef.push().getKey();
+
+        // Upload photo to storage using a Task.
+        UploadTask uploadTask;
+        if(imageUri != null){
+            final StorageReference ref = mStorageRef.child("images/" + key +".jpg");    // Set image name for storage.
+            uploadTask = ref.putFile(imageUri);
+            uploadTask.continueWithTask(task -> getDownloadUrl(ref, task))
+                    .addOnCompleteListener(task -> {
+                        updatePost(userId, key, task);
+                        eventBus.post(new RefreshDataEvent());
+                        view.callOnBackPressed();
+                    });
+        }
+        else{
+            updatePost(userId, key, postToEdit.getImageUrl());
+        }
+
+
+    }
+
+    private void updatePost(String userId, String key, String imageUrl) {
+            view.showToast(R.string.image_uploaded_successfully);
+            // Add post to DB.
+            PostModel newPost = new PostModel(key,
+                    imageUrl,
+                    view.getTitle(),
+                    view.getDescription(),
+                    (currentLocation == null) ? postToEdit.getLatitude() : currentLocation.getLatitude(),
+                    (currentLocation == null) ? postToEdit.getLongitude() : currentLocation.getLongitude(),
+                    userId,
+                    postToEdit.getUserName(),
+                    view.getContactPhone(),
+                    getCategory(),
+                    view.getEmail());
+        // TODO: 04/08/2018 need to change this to an edit request
+            // Write a message to the database.
+            myRef.child(key).setValue(newPost);
+            view.showToast(R.string.post_published_successfully);
+
+    }
+
+
+    private void updatePost(String userId, String key, Task<Uri> task) {
+        if (task.isSuccessful()) {
+            Uri downloadUri = task.getResult();
+            view.showToast(R.string.image_uploaded_successfully);
+            // Add post to DB.
+            PostModel newPost = new PostModel(key,
+                    downloadUri.toString(),
+                    view.getTitle(),
+                    view.getDescription(),
+                    (currentLocation == null) ? postToEdit.getLatitude() : currentLocation.getLatitude(),
+                    (currentLocation == null) ? postToEdit.getLongitude() : currentLocation.getLongitude(),
+                    userId,
+                    postToEdit.getUserName(),
+                    view.getContactPhone(),
+                    getCategory(),
+                    view.getEmail());
+
+            // TODO: 04/08/2018 need to change this to an edit request
+            // Write a message to the database.
+            myRef.child(key).setValue(newPost);
+            view.showToast(R.string.post_published_successfully);
+
+        } else {
+            view.showToast(R.string.failed_uploading_new_post);
+        }
+    }
+
+    private void publishNewPost() {
         // Get additional info for post.
         String userId = prefs.getUserId();
         view.showPublishProgressBar();
@@ -173,6 +287,31 @@ class NewPostPresenter implements NewPostContract.Presenter{
         return category;
     }
 
+    private int getCategoryButtonId(String category) {
+        if(ELECTRONICS_CATEGORY.equals(category)){
+            return R.id.electronics_checkbox;
+        }
+        if(FURNITURE_CATEGORY.equals(category)){
+            return R.id.furniture_checkbox;
+        }
+        if(BOOKS_CATEGORY.equals(category)){
+            return R.id.books_checkbox;
+        }
+        if(CLOTHING_CATEGORY.equals(category)){
+            return R.id.clothing_checkbox;
+        }
+        if(SPORTS_CATEGORY.equals(category)){
+            return R.id.sports_checkbox;
+        }
+        if(CHILDREN_CATEGORY.equals(category)){
+            return R.id.children_checkbox;
+        }
+        if(OTHER_CATEGORY.equals(category)){
+            return R.id.other_checkbox;
+        }
+        return NO_MATCHING_CATEGORY;
+    }
+
     @NonNull
     private Task<Uri> getDownloadUrl(StorageReference ref, Task<UploadTask.TaskSnapshot> task) {
         if (!task.isSuccessful()) {
@@ -191,6 +330,7 @@ class NewPostPresenter implements NewPostContract.Presenter{
                     Uri selectedImage = imageReturnedIntent.getData();
                     imageUri = selectedImage;
                     view.setImageUri(selectedImage);
+                    view.hideUploadImageTextView();
                     fieldChangedPublishSubject.onNext(IGNORED_VALUE);
                 }
                 break;
@@ -249,12 +389,22 @@ class NewPostPresenter implements NewPostContract.Presenter{
     }
 
     private boolean mandatoryFieldsAreValid() {
-        return  (!emptyTitle) &&
-                (!emptyDescription) &&
-                (validEmail || validPhone) &&
-                (!selectedRadioButton.equals(DEFAULT_CATEGORY)) &&
-                (currentLocation != null) &&
-                (imageUri != null);
+        boolean validFields;
+        if(isEdit){
+            validFields = (!emptyTitle) &&
+                    (!emptyDescription) &&
+                    (validEmail || validPhone) &&
+                    (!selectedRadioButton.equals(DEFAULT_CATEGORY)) &&
+                    ((currentLocation != null) || (useLastLocation));
+        } else{
+            validFields = (!emptyTitle) &&
+                    (!emptyDescription) &&
+                    (validEmail || validPhone) &&
+                    (!selectedRadioButton.equals(DEFAULT_CATEGORY)) &&
+                    (currentLocation != null) &&
+                    (imageUri != null);
+        }
+        return  validFields;
     }
 
     @Override
@@ -285,10 +435,15 @@ class NewPostPresenter implements NewPostContract.Presenter{
 
     @Override
     public void onUseCurrentLocationClicked() {
+        if(isEdit){
+            view.setLastLocationTextColor(R.color.white);
+            view.setLastLocationClickable();
+        }
         SingleSubject<Location> locationSubject = SingleSubject.create();
         locationSubject.observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess(location -> {
                     currentLocation = location;
+                    useLastLocation = false;
                     fieldChangedPublishSubject.onNext(IGNORED_VALUE);
                     view.changeUseCurrentLocationTextViewColor(R.color.green);
                     view.setUseCurrentLocationTextViewUnclickable();
@@ -296,6 +451,17 @@ class NewPostPresenter implements NewPostContract.Presenter{
                 }).subscribe();
         view.showLocationProgressBar();
         locationProvider.getLocation(locationSubject);
+    }
+
+    @Override
+    public void onLastLocationClicked() {
+        currentLocation = null;
+        useLastLocation = true;
+        view.setCurrentLocationTextViewColor(R.color.white);
+        view.setLastLocationTextColor(R.color.green);
+        view.setCurrentLocationClickable();
+        view.setLastLocationUnclickable();
+        fieldChangedPublishSubject.onNext(IGNORED_VALUE);
     }
 
     private static boolean isValidPhone(String phone) {

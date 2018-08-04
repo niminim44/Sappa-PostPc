@@ -56,5 +56,7 @@
     <string name="search">Search</string>
     <string name="or_select_categories">Or select categories</string>
     <string name="find_me_neat_stuff">Find me neat stuff!</string>
+    <string name="use_last_documented_location"><u>USE LAST LOCATION</u></string>
+    <string name="choose_different_image"><u>CHOOSE A DIFFERENT IMAGE</u></string>
 
 </resources>

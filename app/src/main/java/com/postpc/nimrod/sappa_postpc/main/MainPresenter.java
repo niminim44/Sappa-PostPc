@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
 import com.postpc.nimrod.sappa_postpc.R;
+import com.postpc.nimrod.sappa_postpc.main.events.EditPostEvent;
 import com.postpc.nimrod.sappa_postpc.main.events.LogoutEvent;
 import com.postpc.nimrod.sappa_postpc.main.events.MyPostClickedEvent;
 import com.postpc.nimrod.sappa_postpc.main.events.NearbyPostClickedEvent;
@@ -13,6 +14,7 @@ import com.postpc.nimrod.sappa_postpc.main.myposts.MyPostsFragment;
 import com.postpc.nimrod.sappa_postpc.main.nearby.NearbyFragment;
 import com.postpc.nimrod.sappa_postpc.main.settings.SettingsFragment;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
+import com.postpc.nimrod.sappa_postpc.models.PostModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
 import org.greenrobot.eventbus.EventBus;
@@ -116,6 +118,12 @@ class MainPresenter implements MainContract.Presenter{
     @Subscribe
     public void onLogoutEvent(LogoutEvent event){
         view.finishAndOpenLoginActivity();
+    }
+
+    @Subscribe
+    public void onEditEvent(EditPostEvent event){
+        PostModel postToEdit = event.getPostModel();
+        view.openNewPostFragment(event.getPostModel());
     }
 
     private TabLayout.OnTabSelectedListener getTabSelectedListener() {
