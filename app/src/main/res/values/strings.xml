@@ -60,4 +60,7 @@
     <string name="choose_different_image"><u>CHOOSE A DIFFERENT IMAGE</u></string>
     <string name="select_action">Select Action</string>
 
+    <string name="about_text">Tired of stuff laying around the house gathering dust? There might be someone in your area desperately looking for that exact item! Sappa app is here to help you in both cases. Born as a small university course project, Sappa soon became a part of the global village. Not only that it brought people together, the app helped substantially reduce the human footprint on the environment. By sharing we reduce the enormous toll that the production of new products, recycling and utilization processes take on planet Earth. So give a hand, share an item! :)</string>
+
+
 </resources>

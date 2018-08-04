@@ -13,6 +13,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,6 +63,7 @@ class MyPostsPresenter implements MyPostsContract.Presenter{
                     view.initRecyclerView(new ArrayList<>());
                 }
                 else{
+                    Collections.reverse(myPostModels);
                     view.hideNoOwnPostsTextView();
                     view.initRecyclerView(myPostModels);
                 }

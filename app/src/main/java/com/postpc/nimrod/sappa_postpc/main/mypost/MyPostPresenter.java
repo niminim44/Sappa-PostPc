@@ -61,6 +61,7 @@ public class MyPostPresenter implements MyPostContract.Presenter{
 
     @Override
     public void onEditClicked() {
+        view.callOnBackPressed();
         eventBus.post(new EditPostEvent(new PostModel(nearbyPostModel)));
     }
 

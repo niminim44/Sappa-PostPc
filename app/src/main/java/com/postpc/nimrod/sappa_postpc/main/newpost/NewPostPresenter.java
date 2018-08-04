@@ -133,7 +133,7 @@ class NewPostPresenter implements NewPostContract.Presenter{
     @Override
     public void onPublishClicked() {
         if(isEdit){
-//            editPost();
+            editPost();
         } else {
             publishNewPost();
         }
@@ -145,7 +145,7 @@ class NewPostPresenter implements NewPostContract.Presenter{
         view.showPublishProgressBar();
 
         // Use push() to create a post unique key in the node containing posts.
-        String key = myRef.push().getKey();
+        String key = postToEdit.getPostId();
 
         // Upload photo to storage using a Task.
         UploadTask uploadTask;
@@ -155,36 +155,32 @@ class NewPostPresenter implements NewPostContract.Presenter{
             uploadTask.continueWithTask(task -> getDownloadUrl(ref, task))
                     .addOnCompleteListener(task -> {
                         updatePost(userId, key, task);
-                        eventBus.post(new RefreshDataEvent());
-                        view.callOnBackPressed();
                     });
         }
         else{
             updatePost(userId, key, postToEdit.getImageUrl());
         }
-
-
     }
 
     private void updatePost(String userId, String key, String imageUrl) {
-            view.showToast(R.string.image_uploaded_successfully);
-            // Add post to DB.
-            PostModel newPost = new PostModel(key,
-                    imageUrl,
-                    view.getTitle(),
-                    view.getDescription(),
-                    (currentLocation == null) ? postToEdit.getLatitude() : currentLocation.getLatitude(),
-                    (currentLocation == null) ? postToEdit.getLongitude() : currentLocation.getLongitude(),
-                    userId,
-                    postToEdit.getUserName(),
-                    view.getContactPhone(),
-                    getCategory(),
-                    view.getEmail());
-        // TODO: 04/08/2018 need to change this to an edit request
-            // Write a message to the database.
-            myRef.child(key).setValue(newPost);
-            view.showToast(R.string.post_published_successfully);
-
+        view.showToast(R.string.image_uploaded_successfully);
+        // Add post to DB.
+        PostModel newPost = new PostModel(key,
+                imageUrl,
+                view.getTitle(),
+                view.getDescription(),
+                (currentLocation == null) ? postToEdit.getLatitude() : currentLocation.getLatitude(),
+                (currentLocation == null) ? postToEdit.getLongitude() : currentLocation.getLongitude(),
+                userId,
+                postToEdit.getUserName(),
+                view.getContactPhone(),
+                getCategory(),
+                view.getEmail());
+        // Write a message to the database.
+        myRef.child(key).setValue(newPost);
+        view.showToast(R.string.post_published_successfully);
+        view.callOnBackPressed();
+        eventBus.post(new RefreshDataEvent());
     }
 
 
@@ -209,6 +205,8 @@ class NewPostPresenter implements NewPostContract.Presenter{
             // Write a message to the database.
             myRef.child(key).setValue(newPost);
             view.showToast(R.string.post_published_successfully);
+            view.callOnBackPressed();
+            eventBus.post(new RefreshDataEvent());
 
         } else {
             view.showToast(R.string.failed_uploading_new_post);

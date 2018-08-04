@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     public void openNewPostFragment(PostModel postModel) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, NewPostFragment.newInstance(postModel))
+                .add(R.id.container, NewPostFragment.newInstance(postModel))
                 .addToBackStack("new_post")
                 .commit();
         container.setVisibility(View.VISIBLE);

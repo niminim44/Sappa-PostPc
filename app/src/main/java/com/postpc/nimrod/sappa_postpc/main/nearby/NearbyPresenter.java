@@ -21,6 +21,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -122,7 +123,6 @@ class NearbyPresenter implements NearbyContract.Presenter{
 
                 // Iterate over the data snapshot, reproduce NewPostModel for each post
                 // and filter it according to distance/category/search parameters.
-                //TODO - add category to NewPostModel to filter over it later.
                 Iterable<DataSnapshot> posts = postsSnapShot.getChildren();
                 for (DataSnapshot curPost : posts) {
                     PostModel post = curPost.getValue(PostModel.class);
@@ -138,14 +138,14 @@ class NearbyPresenter implements NearbyContract.Presenter{
                         String freeTextFilter = preferences.getFreeTextFilter();
 
                         // Check if current post fits the filtering parameters.
+                        boolean notMyPost = checkNotMyPost(post);
                         categoryFits = checkCategoryByFilter(categoryFilter, post.getCategory().toLowerCase());
-                        titleFits = freeTextFilter.toLowerCase().contains(post.getTitle().toLowerCase());
+                        titleFits = post.getTitle().toLowerCase().contains(freeTextFilter.toLowerCase());
                         descriptionFits = post.getDescription().toLowerCase().contains(freeTextFilter.toLowerCase());
 
                         // Filter current post according to category and search field.
                         // *contains() returns true on empty search
-                        if ( categoryFits && ( titleFits || descriptionFits ) ) {
-//                        if(categoryFits){
+                        if ( categoryFits && ( titleFits || descriptionFits ) && notMyPost) {
                             post.setDistance(Math.round(dist[0] * 0.001) + " km away");
                             nearbyPostModels.add(post);
                         }
@@ -157,6 +157,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
                     view.initRecyclerView(new ArrayList<>());
                 }
                 else{
+                    Collections.reverse(nearbyPostModels);
                     view.hideNoPostsAvailableTextView();
                     view.initRecyclerView(nearbyPostModels);
                 }
@@ -167,6 +168,10 @@ class NearbyPresenter implements NearbyContract.Presenter{
                 Log.e("The read failed: ",  databaseError.toString());
             }
         });
+    }
+
+    private boolean checkNotMyPost(PostModel post) {
+        return !preferences.getUserId().equals(post.getUserID());
     }
 
     private boolean checkCategoryByFilter(List<CategorySearchModel> categoryFilter, String currentCategory) {
