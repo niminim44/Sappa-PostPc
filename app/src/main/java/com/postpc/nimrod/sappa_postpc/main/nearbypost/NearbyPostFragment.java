@@ -1,9 +1,13 @@
 package com.postpc.nimrod.sappa_postpc.main.nearbypost;
 
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.CircularProgressDrawable;
+import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -145,5 +149,58 @@ public class NearbyPostFragment extends Fragment implements NearbyPostContract.V
     @Override
     public void setCategory(String category) {
         categoryTextView.setText(category);
+    }
+
+    @Override
+    public void createAlertDialog(int titleResourceId, String[] items, DialogInterface.OnClickListener onClickListener) {
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
+        pictureDialog.setTitle(getContext().getResources().getString(titleResourceId));
+        pictureDialog.setItems(items, onClickListener);
+        pictureDialog.show();
+    }
+
+    @Override
+    public void callOwner(String phone) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phone));
+        startActivity(intent);
+    }
+
+    @Override
+    public void messageOwner(String title, String phone) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setData(Uri.parse("smsto:" + phone));  // This ensures only SMS apps respond
+        intent.putExtra("sms_body", "Hi! I saw your post " + "\"" + title + "\"" + " on Sappa, is it still available?");
+        if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void whatsappOwner(String title, String phone) {
+        try {
+            String text = "Hi! I saw your post " + "\"" + title + "\"" + " on Sappa, is it still available?";// Replace with your message.
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + "972" + phone +"&text="+text));
+            startActivity(intent);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void emailOwner(String title, String email) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:" + email)); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Is " + "\""+ title + "\"" + " from Sappa still available?");
+        if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    @OnClick(R.id.i_need_it_button)
+    public void onNeedItClicked() {
+        presenter.onNeedItClicked();
     }
 }

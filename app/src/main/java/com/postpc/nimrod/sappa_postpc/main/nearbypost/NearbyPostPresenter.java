@@ -2,8 +2,12 @@ package com.postpc.nimrod.sappa_postpc.main.nearbypost;
 
 import android.os.Bundle;
 
+import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.utils.UiUtils;
 import com.postpc.nimrod.sappa_postpc.models.PostModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class NearbyPostPresenter implements NearbyPostContract.Presenter{
 
@@ -21,6 +25,7 @@ class NearbyPostPresenter implements NearbyPostContract.Presenter{
 
     private NearbyPostContract.View view;
     private UiUtils uiUtils;
+    private PostModel nearbyPostModel;
 
     NearbyPostPresenter(NearbyPostContract.View view, UiUtils uiUtils) {
         this.view = view;
@@ -30,7 +35,7 @@ class NearbyPostPresenter implements NearbyPostContract.Presenter{
     @Override
     public void init() {
         Bundle args = view.getPostArguments();
-        PostModel nearbyPostModel = toNearbyPostModel(args);
+        nearbyPostModel = toNearbyPostModel(args);
         view.setImage(nearbyPostModel.getImageUrl(),
                 (int)uiUtils.convertPixelsToDp(view.getScreenWidth()), 250);
         view.setTitle(nearbyPostModel.getTitle());
@@ -58,5 +63,43 @@ class NearbyPostPresenter implements NearbyPostContract.Presenter{
     @Override
     public void backButtonClicked() {
         view.callOnBackPressed();
+    }
+
+    @Override
+    public void onNeedItClicked() {
+        String[] pictureDialogItems = getDialogItems();
+        view.createAlertDialog(R.string.select_action, pictureDialogItems, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    view.callOwner(nearbyPostModel.getPhone());
+                    break;
+                case 1:
+                    view.messageOwner(nearbyPostModel.getTitle(), nearbyPostModel.getPhone());
+                    break;
+                case 2:
+                    view.whatsappOwner(nearbyPostModel.getTitle(), nearbyPostModel.getPhone());
+                    break;
+                case 3:
+                    view.emailOwner(nearbyPostModel.getTitle(), nearbyPostModel.getEmail());
+                    break;
+            }
+        });
+    }
+
+    private String[] getDialogItems() {
+        List<String> itemsList = new ArrayList<>();
+        if(nearbyPostModel.getPhone() != null && !nearbyPostModel.getPhone().equals("")){
+            itemsList.add("Call owner");
+            itemsList.add("Send SMS message");
+            itemsList.add("Send WhatsApp message");
+        }
+        if(nearbyPostModel.getEmail() != null && !nearbyPostModel.getEmail().equals("")){
+            itemsList.add("Send Email");
+        }
+        String[] items = new String[itemsList.size()];
+        for(int i = 0; i < itemsList.size(); i++){
+            items[i] = itemsList.get(i);
+        }
+        return items;
     }
 }
