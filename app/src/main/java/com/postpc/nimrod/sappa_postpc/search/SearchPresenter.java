@@ -1,6 +1,8 @@
 package com.postpc.nimrod.sappa_postpc.search;
 
+import com.postpc.nimrod.sappa_postpc.main.events.HideClearSearchButtonEvent;
 import com.postpc.nimrod.sappa_postpc.main.events.RefreshDataEvent;
+import com.postpc.nimrod.sappa_postpc.main.events.ShowClearSearchButtonEvent;
 import com.postpc.nimrod.sappa_postpc.models.CategorySearchModel;
 import com.postpc.nimrod.sappa_postpc.preferences.Preferences;
 
@@ -33,7 +35,26 @@ class SearchPresenter implements SearchContract.Presenter {
         preferences.saveCurrentCategoryFilter(searchCategories);
         preferences.saveFreeTextSearch(freeSearchText);
         eventBus.post(new RefreshDataEvent());
+        if(searchParametersAreNotDefault(searchCategories, freeSearchText)){
+            eventBus.post(new ShowClearSearchButtonEvent());
+        }
+        else{
+            eventBus.post(new HideClearSearchButtonEvent());
+        }
         view.callOnBackPressed();
+    }
+
+    private boolean searchParametersAreNotDefault(List<CategorySearchModel> searchCategories, String freeSearchText) {
+        return ((!allCategoriesSelected(searchCategories)) || (!freeSearchText.equals("")));
+    }
+
+    private boolean allCategoriesSelected(List<CategorySearchModel> searchCategories) {
+        for (CategorySearchModel categorySearchModel : searchCategories) {
+            if(!categorySearchModel.isSelected()){
+                return false;
+            }
+        }
+        return true;
     }
 
     private List<CategorySearchModel> getCategoriesInfo() {

@@ -22,6 +22,7 @@ class NearbyPostPresenter implements NearbyPostContract.Presenter{
     static final String USER_NAME = "user name";
     static final String PHONE = "phone";
     static final String EMAIL= "email";
+    static final String TIMESTAMP = "timestamp";
 
     private NearbyPostContract.View view;
     private UiUtils uiUtils;
@@ -56,8 +57,8 @@ class NearbyPostPresenter implements NearbyPostContract.Presenter{
                 args.getString(USER_NAME),
                 args.getString(PHONE),
                 args.getString(CATEGORY),
-                args.getString(EMAIL)
-        );
+                args.getString(EMAIL),
+                args.getString(TIMESTAMP));
     }
 
     @Override

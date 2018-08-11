@@ -26,6 +26,7 @@ public class MyPostPresenter implements MyPostContract.Presenter{
     static final String USER_NAME = "user name";
     static final String PHONE = "phone";
     static final String EMAIL= "email";
+    static final String TIMESTAMP = "timestamp";
     private final EventBus eventBus;
 
     private MyPostContract.View view;
@@ -100,7 +101,7 @@ public class MyPostPresenter implements MyPostContract.Presenter{
                 args.getString(USER_NAME),
                 args.getString(PHONE),
                 args.getString(CATEGORY),
-                args.getString(EMAIL)
-        );
+                args.getString(EMAIL),
+                args.getString(TIMESTAMP));
     }
 }

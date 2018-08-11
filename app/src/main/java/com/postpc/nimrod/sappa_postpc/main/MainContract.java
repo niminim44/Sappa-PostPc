@@ -38,6 +38,10 @@ public interface MainContract {
         void openSearchFragment();
 
         void openNewPostFragment(PostModel postModel);
+
+        void hideClearSearchButton();
+
+        void showClearSearchButton();
     }
 
     interface Presenter{
@@ -51,5 +55,7 @@ public interface MainContract {
         void setCurrentPage(int currentPagePosition);
 
         void onBackPressed();
+
+        void onClearSearchClicked();
     }
 }

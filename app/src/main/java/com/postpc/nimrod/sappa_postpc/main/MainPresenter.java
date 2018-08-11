@@ -7,9 +7,12 @@ import android.widget.TextView;
 
 import com.postpc.nimrod.sappa_postpc.R;
 import com.postpc.nimrod.sappa_postpc.main.events.EditPostEvent;
+import com.postpc.nimrod.sappa_postpc.main.events.HideClearSearchButtonEvent;
 import com.postpc.nimrod.sappa_postpc.main.events.LogoutEvent;
 import com.postpc.nimrod.sappa_postpc.main.events.MyPostClickedEvent;
 import com.postpc.nimrod.sappa_postpc.main.events.NearbyPostClickedEvent;
+import com.postpc.nimrod.sappa_postpc.main.events.RefreshDataEvent;
+import com.postpc.nimrod.sappa_postpc.main.events.ShowClearSearchButtonEvent;
 import com.postpc.nimrod.sappa_postpc.main.myposts.MyPostsFragment;
 import com.postpc.nimrod.sappa_postpc.main.nearby.NearbyFragment;
 import com.postpc.nimrod.sappa_postpc.main.settings.SettingsFragment;
@@ -105,6 +108,14 @@ class MainPresenter implements MainContract.Presenter{
         view.slideUpFab(fabMarginsInPx);
     }
 
+    @Override
+    public void onClearSearchClicked() {
+        view.hideClearSearchButton();
+        preferences.refreshSearchSettings();
+        preferences.saveFreeTextSearch("");
+        eventBus.post(new RefreshDataEvent());
+    }
+
     @Subscribe
     public void onNearbyPostClicked(NearbyPostClickedEvent event){
         calcFabMarginsInPixels();
@@ -122,6 +133,16 @@ class MainPresenter implements MainContract.Presenter{
     @Subscribe
     public void onLogoutEvent(LogoutEvent event){
         view.finishAndOpenLoginActivity();
+    }
+
+    @Subscribe
+    public void onShowClearSearchButtonEvent(ShowClearSearchButtonEvent event){
+        view.showClearSearchButton();
+    }
+
+    @Subscribe
+    public void onHideClearSearchButtonEvent(HideClearSearchButtonEvent event){
+        view.hideClearSearchButton();
     }
 
     @Subscribe

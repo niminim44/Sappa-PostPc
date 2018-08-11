@@ -175,12 +175,16 @@ class NewPostPresenter implements NewPostContract.Presenter{
                 postToEdit.getUserName(),
                 view.getContactPhone(),
                 getCategory(),
-                view.getEmail());
+                view.getEmail(), getCurrentTimestamp());
         // Write a message to the database.
         myRef.child(key).setValue(newPost);
         view.showToast(R.string.post_published_successfully);
         view.callOnBackPressed();
         eventBus.post(new RefreshDataEvent());
+    }
+
+    private String getCurrentTimestamp() {
+        return String.valueOf(System.currentTimeMillis());
     }
 
 
@@ -199,7 +203,7 @@ class NewPostPresenter implements NewPostContract.Presenter{
                     postToEdit.getUserName(),
                     view.getContactPhone(),
                     getCategory(),
-                    view.getEmail());
+                    view.getEmail(), getCurrentTimestamp());
 
             // TODO: 04/08/2018 need to change this to an edit request
             // Write a message to the database.
@@ -248,7 +252,7 @@ class NewPostPresenter implements NewPostContract.Presenter{
                     prefs.getUserName(),
                     view.getContactPhone(),
                     getCategory(),
-                    view.getEmail());
+                    view.getEmail(), getCurrentTimestamp());
 
             // Write a message to the database.
             myRef.child(key).setValue(newPost);

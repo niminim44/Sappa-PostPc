@@ -46,6 +46,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
     DatabaseReference ref = database.getReference();
     private ArrayList<PostModel> nearbyPostModels = new ArrayList<>();
     private Location currentLocation;
+    private boolean servicesAvailable = false;
 
     NearbyPresenter(NearbyContract.View view, Preferences preferences, LocationUtils locationUtils, ConnectivityManager connectivityManager, EventBus eventBus) {
         this.view = view;
@@ -103,8 +104,11 @@ class NearbyPresenter implements NearbyContract.Presenter{
 
     private void getLocationAndContinue() {
         locationUtils.getDeviceLocation(location -> {
-            currentLocation = location;
-            getPostsFromServer();
+            if(!servicesAvailable){
+                servicesAvailable = true;
+                currentLocation = location;
+                getPostsFromServer();
+            }
         });
     }
 
@@ -134,11 +138,11 @@ class NearbyPresenter implements NearbyContract.Presenter{
 
                     // Calculate distance to current item.
                     Location.distanceBetween(myLatitude, myLongitude, post.getLatitude(), post.getLongitude(), dist);
+                    post.setDistanceValue(dist[0] * 0.001f);
 
                     // Filter and convert to NearbyPostModel.
-                    if ((dist[0] * 0.001) < range) {
+                    if (post.getDistanceValue() < range) {
 
-                        //TODO - values we need to store in preferences:
                         List<CategorySearchModel> categoryFilter = preferences.getCurrentCategoryFilter();
                         String freeTextFilter = preferences.getFreeTextFilter();
 
@@ -151,7 +155,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
                         // Filter current post according to category and search field.
                         // *contains() returns true on empty search
                         if ( categoryFits && ( titleFits || descriptionFits ) && notMyPost) {
-                            post.setDistance(Math.round(dist[0] * 0.001) + " km away");
+                            post.setDistance(Math.round(post.getDistanceValue()) + " km away");
                             nearbyPostModels.add(post);
                         }
                     }
@@ -162,7 +166,14 @@ class NearbyPresenter implements NearbyContract.Presenter{
                     view.initRecyclerView(new ArrayList<>());
                 }
                 else{
-                    Collections.reverse(nearbyPostModels);
+//                    Collections.reverse(nearbyPostModels);
+                    Collections.sort(nearbyPostModels, (o1, o2) -> {
+                        int compareByDate = Long.valueOf(o1.getTimestamp()).compareTo(Long.valueOf(o2.getTimestamp()));
+                        if(compareByDate == 0){
+                            return Float.compare(o1.getDistanceValue(), o2.getDistanceValue());
+                        }
+                        return compareByDate;
+                    });
                     view.hideNoPostsAvailableTextView();
                     view.initRecyclerView(nearbyPostModels);
                 }
@@ -209,6 +220,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
 
     @Subscribe
     public void onRefreshDataEvent(RefreshDataEvent event){
+        servicesAvailable = false;
         init();
     }
 }

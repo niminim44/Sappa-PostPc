@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @BindView(R.id.container)
     FrameLayout container;
 
+    @BindView(R.id.clear_search_button)
+    TextView clearSearchButton;
+
     private MainContract.Presenter presenter;
 
     @Override
@@ -186,9 +189,24 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         container.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void hideClearSearchButton() {
+        clearSearchButton.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showClearSearchButton() {
+        clearSearchButton.setVisibility(View.VISIBLE);
+    }
+
     @OnClick(R.id.fab)
     public void onFabClicked(){
         presenter.onFabClicked();
+    }
+
+    @OnClick(R.id.clear_search_button)
+    public void onClearSearchClicked(){
+        presenter.onClearSearchClicked();
     }
 
     private void setupTabsLayout(List<Integer> tabsLayoutsIds, TabLayout.OnTabSelectedListener tabSelectedListener) {
