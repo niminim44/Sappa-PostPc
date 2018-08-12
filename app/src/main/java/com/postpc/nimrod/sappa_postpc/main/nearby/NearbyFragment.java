@@ -114,4 +114,16 @@ public class NearbyFragment extends Fragment implements NearbyContract.View{
         super.onDestroy();
         presenter.onDestroy();
     }
+
+    @Override
+    public void onStop() {
+        presenter.onStop();
+        super.onStop();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.onStart();
+    }
 }

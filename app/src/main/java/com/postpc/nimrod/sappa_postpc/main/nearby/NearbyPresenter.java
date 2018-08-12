@@ -47,6 +47,7 @@ class NearbyPresenter implements NearbyContract.Presenter{
     private ArrayList<PostModel> nearbyPostModels = new ArrayList<>();
     private Location currentLocation;
     private boolean servicesAvailable = false;
+    private boolean stopped = false;
 
     NearbyPresenter(NearbyContract.View view, Preferences preferences, LocationUtils locationUtils, ConnectivityManager connectivityManager, EventBus eventBus) {
         this.view = view;
@@ -75,18 +76,31 @@ class NearbyPresenter implements NearbyContract.Presenter{
         unsubscribeEventBus();
     }
 
+    @Override
+    public void onStop() {
+        servicesAvailable = false;
+        stopped = true;
+    }
+
+    @Override
+    public void onStart() {
+        stopped = false;
+    }
+
     private void checkForInternetAndGpsConnectivity() {
-        locationManager = view.getLocationManager();
-        boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        String text = "";
-        if (!gpsEnabled || !isConnected) {
-            askUserToTurnOnInternetOrGps(gpsEnabled, isConnected, text);
-            retryInFiveSeconds();
-        } else {
-            getLocationAndContinue();
+        if(!stopped){
+            locationManager = view.getLocationManager();
+            boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting();
+            String text = "";
+            if (!gpsEnabled || !isConnected) {
+                askUserToTurnOnInternetOrGps(gpsEnabled, isConnected, text);
+                retryInFiveSeconds();
+            } else {
+                getLocationAndContinue();
+            }
         }
     }
 
@@ -166,9 +180,8 @@ class NearbyPresenter implements NearbyContract.Presenter{
                     view.initRecyclerView(new ArrayList<>());
                 }
                 else{
-//                    Collections.reverse(nearbyPostModels);
                     Collections.sort(nearbyPostModels, (o1, o2) -> {
-                        int compareByDate = Long.valueOf(o1.getTimestamp()).compareTo(Long.valueOf(o2.getTimestamp()));
+                        int compareByDate = Long.valueOf(o2.getTimestamp()).compareTo(Long.valueOf(o1.getTimestamp()));
                         if(compareByDate == 0){
                             return Float.compare(o1.getDistanceValue(), o2.getDistanceValue());
                         }

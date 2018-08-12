@@ -31,6 +31,10 @@ public interface NearbyContract {
         void init();
 
         void onDestroy();
+
+        void onStop();
+
+        void onStart();
     }
 
 }

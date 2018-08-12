@@ -22,7 +22,7 @@ public class Preferences {
     private static final String ELECTRONICS = "Electronics";
     private static final String FURNITURE = "Furniture";
     private static final String BOOKS = "Books";
-    private static final String CLOTHING = "Clohting";
+    private static final String CLOTHING = "Clothing";
     private static final String SPORTS = "Sports & Hobbies";
     private static final String CHILDREN = "Children & Infants";
     private static final String OTHER = "Other";
